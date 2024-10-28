@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-// import CircularProgress from '@mui/material/CircularProgress';
-
+import logo from "../../assets/images/logo.png" // Ensure this path is correct
 
 const ChatComponent = () => {
+  
   const [userInput, setUserInput] = useState('');
   const [loading, setLoading] = useState(false);
+
   const [messages, setMessages] = useState([
     {
       message: 'Hi there! How can I help?',
@@ -49,8 +50,8 @@ const ChatComponent = () => {
         ...prevMessages,
         {
           message: "This is a simulated response. The actual response would come from an API.",
-          type: "apiMessage"
-        }
+          type: "apiMessage",
+        },
       ]);
       setLoading(false);
     }, 1500);
@@ -69,6 +70,7 @@ const ChatComponent = () => {
       e.preventDefault();
     }
   };
+  console.log(messages)
 
   return (
     <div className="flex flex-col h-screen bg-gray-300">
@@ -80,13 +82,13 @@ const ChatComponent = () => {
               message.type === 'userMessage' ? 'justify-end' : 'justify-start'
             }`}
           >
-            {message.type === 'apiMessage' && (
+            {message.sender === 'assistant' && (
               <img
-                src="/parroticon.png"
+                src={logo}
                 alt="AI"
                 width={30}
                 height={30}
-                className="mr-3"
+                className="mr-3 rounded-full"
               />
             )}
             <div
@@ -98,13 +100,13 @@ const ChatComponent = () => {
             >
               <ReactMarkdown>{message.message}</ReactMarkdown>
             </div>
-            {message.type === 'userMessage' && (
+            {message.sender === 'user' && (
               <img
-                src="/logo.png"
+                src={logo}
                 alt="User"
                 width={30}
                 height={30}
-                className="ml-3"
+                className="ml-3 rounded-full"
               />
             )}
           </div>
@@ -121,7 +123,7 @@ const ChatComponent = () => {
             placeholder={loading ? "Waiting for response..." : "Type your message..."}
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
-            className="flex-grow p-2 border  focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="flex-grow p-2 border focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
           <button
             type="submit"
@@ -129,10 +131,7 @@ const ChatComponent = () => {
             className="ml-4 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
           >
             {loading ? (
-             <div>
-                Loading
-                {/* <CircularProgress color="inherit" size={20} /> */}
-             </div>
+              <div>Loading</div>
             ) : (
               <svg viewBox="0 0 20 20" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
