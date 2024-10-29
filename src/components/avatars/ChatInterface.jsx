@@ -71,25 +71,33 @@ const ChatInterface = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
 
- 
+// Fetch conversations
+const fetchConversations = async () => {
+  try {
+    const response = await apiService.get('/conversation');
+    
+    // Sort conversations by creation_date (new to old)
+    const sortedConversations = response.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
+    
+    // Update state with sorted conversations
+    setConversations(sortedConversations);
+
+    // Set the first conversation as selected if it exists
+    if (sortedConversations[0]) {
+      setSelectedThreadId(sortedConversations[0]._id);
+      fetchMessages(sortedConversations[0]._id);
+    }
+  } catch (error) {
+    console.error('Error fetching conversations:', error);
+  }
+};
+
   // Fetch conversations on component mount
   useEffect(() => {
-   // Fetch conversations
-  const fetchConversations = async () => {
-    try {
-      const response = await apiService.get('/conversation');
-      setConversations(response.data);
-      if (response.data[0]) {
-        setSelectedThreadId(response.data[0]?._id);
-        fetchMessages(response.data[0]?._id);
-      }
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-    }
-  };
-
     fetchConversations();
   }, []);
+
+  
 
 
   
@@ -124,12 +132,17 @@ const ChatInterface = () => {
       };
       const response = await apiService.post('/conversation/start', requestData);
       const newConversation = response.data;
-      setConversations((prevConversations) => [newConversation, ...prevConversations]);
+      // setConversations((prevConversations) => [newConversation, ...prevConversations]);
+
+      const conversationsResponse = await apiService.get('/conversation');
+
+       // Sort conversations by creation_date (new to old)
+    const sortedConversations = conversationsResponse.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
+
+      setConversations(sortedConversations);
       setSelectedThreadId(response.data?.thread_id);
-      console.log(response.data?.thread_id)
-
-
-      
+      console.log(response.data)
+      fetchMessages(response.data?.thread_id)
       setMessages([]);
       setNewConversationName('');
     } catch (error) {
@@ -189,14 +202,15 @@ const deleteConversation = async (threadId) => {
 };
 
 
-
-
   const handleEnter = (e) => {
     if (e.key === 'Enter' && userInput) {
       e.preventDefault();
       handleSendMessage();
     }
   };
+
+  const closeModal = () => setIsModalOpen(false);
+
 
   return (
     <div className="flex h-[600px] bg-gray-100 w-full">
@@ -208,13 +222,13 @@ const deleteConversation = async (threadId) => {
           className="flex items-center w-full p-3 mb-6 border border-[#223E66] text-white rounded-lg shadow-md transition duration-300"
           onClick={openNewChatModal}
         >
-          <span className="text-lg font-semibold text-[#223E66] flex justify-start items-center">
-            <RiChatNewFill size={24} className="mr-2" />
+          <span className="text-sm font-semibold text-[#223E66] flex justify-start items-center">
+            <RiChatNewFill size={20} className="mr-2" />
             New Chat
           </span>
         </button>
 
-        <div className="text-gray-700 font-semibold mb-4">Chat History</div>
+        <div className="text-gray-700 text-sm font-semibold mb-4">Chat History</div>
 
  {/* Scrollable conversations list */}
  <div className="h-[70vh] overflow-y-auto p-1">
@@ -254,9 +268,29 @@ const deleteConversation = async (threadId) => {
             <button
               type="submit"
               disabled={loading}
-              className="ml-4 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="rounded-full  text-white"
             >
-              {loading ? "Loading..." : "Send"}
+              {loading ? 
+              <div className="ml-3 bg-customBlue py-3 px-3 rounded-full">
+  <svg  height="10" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
+    <circle cx="15" cy="15" r="12">
+      <animate attributeName="r" from="12" to="12" begin="0s" dur="0.8s" values="12;6;12" calcMode="linear" repeatCount="indefinite" />
+      <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
+    </circle>
+    <circle cx="60" cy="15" r="6" fill-opacity="0.3">
+      <animate attributeName="r" from="6" to="6" begin="0s" dur="0.8s" values="6;12;6" calcMode="linear" repeatCount="indefinite" />
+      <animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite" />
+    </circle>
+    <circle cx="105" cy="15" r="12">
+      <animate attributeName="r" from="12" to="12" begin="0s" dur="0.8s" values="12;6;12" calcMode="linear" repeatCount="indefinite" />
+      <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
+    </circle>
+  </svg>
+</div>
+
+
+ : <span className='text-sm py-2 px-3 ml-3 bg-customBlue rounded-full'>Envoyer</span>
+ }
             </button>
           </form>
         </div>
@@ -265,23 +299,32 @@ const deleteConversation = async (threadId) => {
       {/* Modal for Naming New Conversation */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-lg font-bold mb-4">Start a New Conversation</h2>
-            <input
-              type="text"
-              placeholder="Enter conversation name"
-              value={newConversationName}
-              onChange={(e) => setNewConversationName(e.target.value)}
-              className="w-full p-2 border rounded mb-4"
-            />
-            <button
-              onClick={createNewConversation}
-              className="p-2 w-full bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              Start Conversation
-            </button>
-          </div>
+        <div className="bg-white p-6 rounded-lg shadow-lg md:w-1/3 relative">
+          {/* Close icon in the top right */}
+          <button
+            onClick={closeModal} // Function to close the modal
+            className="absolute top-2 text-xl right-5 font-bold text-red-500 hover:text-gray-700"
+          >
+            &times;
+          </button>
+          
+          <h2 className="text-lg font-bold mb-4">Start a New Conversation</h2>
+          <input
+            type="text"
+            placeholder="Enter conversation name"
+            value={newConversationName}
+            onChange={(e) => setNewConversationName(e.target.value)}
+            className="w-full p-2 border rounded mb-4"
+          />
+          <button
+            onClick={createNewConversation}
+            className="p-2 w-full bg-customBlue text-white rounded hover:bg-blue-700 transition"
+          >
+            Start Conversation
+          </button>
         </div>
+      </div>
+      
       )}
 
     </div>

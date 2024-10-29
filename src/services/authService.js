@@ -30,6 +30,7 @@ export const apiService = {
       );
     }
   },
+
   login: async (userData) => {
     try {
       const response = await axios.post(`${BASE_URL}/auth/login`, userData);
@@ -48,9 +49,11 @@ export const apiService = {
       }
     }
   },
+
   logOut: async () => {
     localStorage.clear();
   },
+
   post: async (path, data) => {
     const headers = { Authorization: localStorage.getItem("token") };
     try {
@@ -65,6 +68,7 @@ export const apiService = {
       );
     }
   },
+
   get: async (path, id) => {
     const headers = { Authorization: localStorage.getItem("token") };
     console.log(headers);
@@ -82,6 +86,7 @@ export const apiService = {
       );
     }
   },
+
   delete: async (path, id) => {
     const headers = { Authorization: localStorage.getItem("token") };
     try {
@@ -97,6 +102,7 @@ export const apiService = {
       );
     }
   },
+  
   put: async (path, id, data) => {
     const headers = { Authorization: localStorage.getItem("token") };
     try {
