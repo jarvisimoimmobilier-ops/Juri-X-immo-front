@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const EditUserInfo = () => {
+  
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/100');
