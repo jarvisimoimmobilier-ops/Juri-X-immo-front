@@ -43,7 +43,7 @@ const ChatComponent = ({ messages }) => {
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
-              <ReactMarkdown>{message.message}</ReactMarkdown>
+              <p className='text-sm'>{message.message}</p>
             </div>
             {message.type === 'userMessage' && (
               <img
@@ -98,6 +98,7 @@ const fetchConversations = async () => {
   }, []);
 
   
+
 
 
   
@@ -213,10 +214,12 @@ const deleteConversation = async (threadId) => {
 
 
   return (
-    <div className="flex h-[600px] bg-gray-100 w-full">
+    <div className="flex flex-col md:flex-row 
+    h-screen bg-gray-100 w-full">
 
       {/* Sidebar */}
-      <div className="w-1/4 h-screen  bg-blue-50 p-4">
+      <div className="w-full md:w-1/4 h-full
+       md:h-screen bg-blue-50 p-2 md:p-4">
 
         <button
           className="flex items-center w-full p-3 mb-6 border border-[#223E66] text-white rounded-lg shadow-md transition duration-300"
@@ -224,14 +227,15 @@ const deleteConversation = async (threadId) => {
         >
           <span className="text-sm font-semibold text-[#223E66] flex justify-start items-center">
             <RiChatNewFill size={20} className="mr-2" />
-            New Chat
+            Nouveau Chat
           </span>
         </button>
 
-        <div className="text-gray-700 text-sm font-semibold mb-4">Chat History</div>
+        <div className="text-gray-700 
+        text-sm font-semibold mb-4">Chat History</div>
 
  {/* Scrollable conversations list */}
- <div className="h-[70vh] overflow-y-auto p-1">
+ <div className="h-[20vh] md:h-[70vh] overflow-y-auto p-1">
   {/* Map through conversations and display each */}
         {conversations.map((conversation) => (
           <div
@@ -250,20 +254,22 @@ const deleteConversation = async (threadId) => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-grow flex flex-col p-6 bg-blue-50">
+      <div className="flex-grow flex flex-col p-2 md:px-3 md:py-2 bg-blue-50">
         <ChatComponent messages={messages} />
 
-        <div className="p-4 border-t bg-white rounded-b-lg">
+        <div className="p-3 border-t  rounded-b-lg">
           <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex items-center">
             <textarea
               disabled={loading}
               onKeyDown={handleEnter}
               rows={1}
               maxLength={512}
-              placeholder={loading ? "Waiting for response..." : "Type your message..."}
+              placeholder={loading ? "En attente de réponse..." : "Tapez votre message..."}
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              className="flex-grow p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="flex-grow text-sm py-2 px-3 border border-gray-300 
+              rounded-full focus:outline-none focus:ring-2
+               focus:ring-blue-600"
             />
             <button
               type="submit"
@@ -299,7 +305,7 @@ const deleteConversation = async (threadId) => {
       {/* Modal for Naming New Conversation */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg md:w-1/3 relative">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-4/5 md:w-1/3 relative">
           {/* Close icon in the top right */}
           <button
             onClick={closeModal} // Function to close the modal
