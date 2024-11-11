@@ -9,6 +9,7 @@ import user from '../../assets/images/user.png';
 import { apiService } from '../../services/authService.js'
 
 const ChatComponent = ({ messages }) => {
+
   const messageListRef = useRef(null);
 
   useEffect(() => {
@@ -18,8 +19,8 @@ const ChatComponent = ({ messages }) => {
   }, [messages]);
 
   return (
-    <div className="flex-grow flex flex-col h-full bg-white rounded-lg shadow-lg">
-      <div className="flex-grow p-6 overflow-y-auto bg-gray-50 rounded-t-lg" ref={messageListRef}>
+    <div className="flex-grow flex flex-col max-h-[70vh]  rounded-lg ">
+      <div className="flex-grow p-6 overflow-y-auto bg-orange-50 rounded-md" ref={messageListRef}>
         {messages.map((message, index) => (
           <div
             key={index}
@@ -37,13 +38,13 @@ const ChatComponent = ({ messages }) => {
               />
             )}
             <div
-              className={`p-3 rounded-lg max-w-sm ${
+              className={`p-3 rounded-lg  ${
                 message.type === 'userMessage'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-customBlue text-white'
                   : 'bg-gray-200 text-gray-700'
               }`}
             >
-              <p className='text-sm'>{message.message}</p>
+              <ReactMarkdown>{message.message}</ReactMarkdown>
             </div>
             {message.type === 'userMessage' && (
               <img
@@ -96,10 +97,6 @@ const fetchConversations = async () => {
   useEffect(() => {
     fetchConversations();
   }, []);
-
-  
-
-
 
   
 // Fetch messages for a specific conversation
@@ -182,25 +179,26 @@ const fetchConversations = async () => {
   };
 
  // Delete a conversation
-const deleteConversation = async (threadId) => {
-  try {
-    await apiService.delete('/conversation', threadId);
-    setConversations((prevConversations) => {
-      const updatedConversations = prevConversations.filter(
-        (conversation) => conversation._id !== threadId
-      );
+  const deleteConversation = async (threadId) => {
+    try {
+      await apiService.delete('/conversation', threadId);
+      setConversations((prevConversations) => {
+        const updatedConversations = prevConversations.filter(
+          (conversation) => conversation._id !== threadId
+        );
 
-      // Set selectedThreadId to the first conversation's _id if available, else null
-      setSelectedThreadId(updatedConversations[0]?._id || null);
-      fetchMessages(updatedConversations[0]?._id || null)
-      return updatedConversations;
-    });
+        // Set selectedThreadId to the first conversation's _id if available, else null
+        setSelectedThreadId(updatedConversations[0]?._id || null);
+        fetchMessages(updatedConversations[0]?._id || null)
+        return updatedConversations;
+      });
+     
 
-    console.log(`Conversation with thread ID ${threadId} deleted successfully`);
-  } catch (error) {
-    console.error('Error deleting conversation:', error);
-  }
-};
+      console.log(`Conversation with thread ID ${threadId} deleted successfully`);
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    }
+  };
 
 
   const handleEnter = (e) => {
@@ -212,13 +210,14 @@ const deleteConversation = async (threadId) => {
 
   const closeModal = () => setIsModalOpen(false);
 
+  
 
   return (
     <div className="flex flex-col md:flex-row 
-    h-screen bg-gray-100 w-full">
+    h-screen bg-gray-100 w-full rounded-md">
 
       {/* Sidebar */}
-      <div className="w-full md:w-1/4 h-full
+      <div className="w-full md:flex-[0.25] h-full
        md:h-screen bg-blue-50 p-2 md:p-4">
 
         <button
@@ -254,8 +253,23 @@ const deleteConversation = async (threadId) => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-grow flex flex-col p-2 md:px-3 md:py-2 bg-blue-50">
-        <ChatComponent messages={messages} />
+      <div className="flex-grow md:flex-[0.75]
+       w-full flex flex-col p-2 md:px-3 md:py-2 bg-blue-50">
+
+      {conversations.length === 0 ?  
+     <div className='flex justify-center bg-white flex-col h-[70vh] text-center items-center'>
+        <span className='mb-2'> Aucune conversation de chat n'a été créée pour le moment.</span>
+         <button
+        className="flex items-center max-w-md p-3 mb-6 border bg-customBlue border-customOrange text-white rounded-lg shadow-md transition duration-300"
+        onClick={openNewChatModal}
+      >
+        <span className="text-sm font-semibold text-customOrange  flex justify-start items-center">
+          <RiChatNewFill size={20} className="mr-2" />
+          Nouveau Chat
+        </span>
+      </button></div>
+       : 
+      <>  <ChatComponent messages={messages} />
 
         <div className="p-3 border-t  rounded-b-lg">
           <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex items-center">
@@ -269,7 +283,7 @@ const deleteConversation = async (threadId) => {
               onChange={(e) => setUserInput(e.target.value)}
               className="flex-grow text-sm py-2 px-3 border border-gray-300 
               rounded-full focus:outline-none focus:ring-2
-               focus:ring-blue-600"
+               focus:ring-cusbg-customBlue"
             />
             <button
               type="submit"
@@ -300,6 +314,10 @@ const deleteConversation = async (threadId) => {
             </button>
           </form>
         </div>
+</> 
+      }
+
+     
       </div>
 
       {/* Modal for Naming New Conversation */}
@@ -332,6 +350,8 @@ const deleteConversation = async (threadId) => {
       </div>
       
       )}
+
+     
 
     </div>
   );
