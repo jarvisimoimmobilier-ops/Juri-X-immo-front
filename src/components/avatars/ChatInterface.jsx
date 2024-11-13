@@ -210,7 +210,6 @@ const fetchConversations = async () => {
 
   const closeModal = () => setIsModalOpen(false);
 
-  
 
   return (
     <div className="flex flex-col md:flex-row 
@@ -281,9 +280,9 @@ const fetchConversations = async () => {
               placeholder={loading ? "En attente de réponse..." : "Tapez votre message..."}
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              className="flex-grow text-sm py-2 px-3 border border-gray-300 
-              rounded-full focus:outline-none focus:ring-2
-               focus:ring-cusbg-customBlue"
+              className="
+              border block w-full px-4 py-3 placeholder-gray-500 border-gray-300 rounded-lg focus:ring-customBlue focus:border-customBlue sm:text-sm caret-customBlue
+              "
             />
             <button
               type="submit"

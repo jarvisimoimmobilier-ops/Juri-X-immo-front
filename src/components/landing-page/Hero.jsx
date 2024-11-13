@@ -55,9 +55,7 @@ const Hero = () => {
             </a>
           </div>
 
-          <p className="mt-8 text-base  text-gray-600 font-black">
-            3 Days free trial · No credit card required
-          </p>
+        
         </div>
       </div>
     </section>

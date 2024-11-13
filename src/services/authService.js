@@ -102,17 +102,21 @@ export const apiService = {
       );
     }
   },
-  
+
   put: async (path, id, data) => {
     const headers = { Authorization: localStorage.getItem("token") };
     try {
-      const response = await axios.put(BASE_URL + path + (id == undefined ? "" : "/" + id), data, {
-        headers,
-      });
+      const response = await axios.patch(
+        BASE_URL + path + (id == undefined ? "" : "/" + id),
+        data,
+        {
+          headers,
+        }
+      );
       return response;
     } catch (error) {
       console.log(error);
-      handleLogout(error.response);
+      // handleLogout(error.response);
       throw new Error(
         error.response.data.error || "Network error during updating ressources "
       );

@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Layout from './layout';
@@ -10,21 +6,50 @@ import Avatars from './pages/Avatars';
 import Payout from './pages/Payout';
 import Login from './pages/Login';
 import Register from './components/auth/Register';
+import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
 
 function App() {
-
   return (
     <Router>
-    <Routes>
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/profile" element={<Layout><Profile /></Layout>} />
-      <Route path="/avatars" element={<Layout><Avatars /></Layout>} />
-      <Route path="/payout" element={<Layout><Payout /></Layout>} />
-    </Routes>
-  </Router>
-  )
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Wrap protected routes with PrivateRoute */}
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Profile />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/avatars"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Avatars />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payout"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Payout />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
