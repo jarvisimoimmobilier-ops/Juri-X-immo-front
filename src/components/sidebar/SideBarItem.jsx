@@ -1,9 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const SideBarOption = ({ path, label, icon: Icon, sidebarExpanded, pathname }) => {
+const SideBarOption = ({ path, label, icon: Icon, sidebarExpanded, pathname,setSideBarOpen }) => {
   return (
-    <li className={`p-5 last:mb-0 ${pathname === path ? "bg-white " : ""}`}>
+    <li onClick={()=>setSideBarOpen(false)}  className={`p-5 last:mb-0 ${pathname === path ? "bg-white " : ""}`}>
       <NavLink
         end
         to={path}
