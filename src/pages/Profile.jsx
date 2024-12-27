@@ -183,7 +183,7 @@ export default function Profile() {
                     <div className="sm:grid sm:grid-cols-3 sm:gap-5 sm:items-start">
                       <label className="block text-sm font-bold text-gray-900 sm:mt-px sm:pt-2">Adresse e-mail</label>
                       <div className="mt-2 sm:mt-0 sm:col-span-2">
-                        <CustomInput type="email" value={userData.auth_user.email} readOnly />
+                        <CustomInput disabled={true} type="email" value={userData.auth_user.email} readOnly />
                       </div>
                     </div>
 

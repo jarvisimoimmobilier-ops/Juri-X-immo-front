@@ -1,10 +1,11 @@
 // CustomInput.js
 import React from 'react';
 
-export default function CustomInput({ type = 'text', value, onChange, placeholder = '', className = '' }) {
+export default function CustomInput({ type = 'text', value, onChange, placeholder = '', className = '',disabled=false }) {
   return (
     <input
       type={type}
+      disabled={disabled}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
