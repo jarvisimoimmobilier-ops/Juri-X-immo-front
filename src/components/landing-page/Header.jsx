@@ -11,6 +11,7 @@ const Header = () => {
     setExpanded(false); // Close mobile menu if open
   };
 
+  const token = localStorage.getItem("token");
 
   return (
     <header className="py-4 shadow-sm bg-white sm:py-5 relative z-50">
@@ -83,12 +84,12 @@ const Header = () => {
 
           <div className="hidden ml-auto sm:flex lg:ml-0">
             <a
-              href="/register"
+              href={token ? 'avatars':'register'}
               title="Start free trial"
               className="inline-flex items-center justify-center px-6 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-gray-900 rounded-full hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
               role="button"
             >
-              Start free trial
+              Commencer
             </a>
           </div>
 

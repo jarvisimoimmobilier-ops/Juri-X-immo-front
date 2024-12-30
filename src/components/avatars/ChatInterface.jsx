@@ -5,6 +5,7 @@ import { CiEdit } from "react-icons/ci";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiChatNewFill } from "react-icons/ri";
 import logo from '../../assets/images/logo.png';
+
 import user from '../../assets/images/user.png';
 import { apiService } from '../../services/authService.js'
 
@@ -62,7 +63,7 @@ const ChatComponent = ({ messages }) => {
   );
 };
 
-const ChatInterface = () => {
+const ChatInterface = ({assistantId}) => {
 
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -74,12 +75,26 @@ const ChatInterface = () => {
 
 // Fetch conversations
 const fetchConversations = async () => {
+  // const token = localStorage.getItem('token'); // Get token from localStorage
+
+  // if (!token) {
+  //   console.error("No token found. Please log in.");
+  //   return; // Return early if no token is found
+  // }
+  const headers = { Authorization: localStorage.getItem("token") };
+
   try {
-    const response = await apiService.get('/conversation');
-    
+    // Send the request to the server with assistant_id in the request body and the token in the headers
+    const response = await axios.post(
+      'https://lionfish-app-9xylm.ondigitalocean.app/api/v1/conversation',
+      { assistant_id: assistantId }, // Send assistant_id in the request body
+      {
+       headers
+      }
+    );
     // Sort conversations by creation_date (new to old)
     const sortedConversations = response.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
-    
+
     // Update state with sorted conversations
     setConversations(sortedConversations);
 
@@ -93,10 +108,15 @@ const fetchConversations = async () => {
   }
 };
 
+
   // Fetch conversations on component mount
   useEffect(() => {
     fetchConversations();
   }, []);
+
+  useEffect(() => {
+    fetchConversations();
+  }, [assistantId]);
 
   
 // Fetch messages for a specific conversation
@@ -126,16 +146,16 @@ const fetchConversations = async () => {
     try {
       const requestData = {
         name: newConversationName,
-        assistant_id: "1",
+        assistant_id: Number(assistantId),
       };
       const response = await apiService.post('/conversation/start', requestData);
       const newConversation = response.data;
       // setConversations((prevConversations) => [newConversation, ...prevConversations]);
 
-      const conversationsResponse = await apiService.get('/conversation');
+     fetchConversations()
 
        // Sort conversations by creation_date (new to old)
-    const sortedConversations = conversationsResponse.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
+      const sortedConversations = conversationsResponse.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
 
       setConversations(sortedConversations);
       setSelectedThreadId(response.data?.thread_id);
@@ -143,6 +163,7 @@ const fetchConversations = async () => {
       fetchMessages(response.data?.thread_id)
       setMessages([]);
       setNewConversationName('');
+
     } catch (error) {
       console.error('Error creating new conversation:', error);
     }
@@ -232,23 +253,23 @@ const fetchConversations = async () => {
         <div className="text-gray-700 
         text-sm font-semibold mb-4">Chat History</div>
 
- {/* Scrollable conversations list */}
- <div className="h-[20vh] md:h-[70vh] overflow-y-auto p-1">
-  {/* Map through conversations and display each */}
-        {conversations.map((conversation) => (
-          <div
-            key={conversation._id}
-            className={`${conversation._id === selectedThreadId ? "bg-[#223E66] text-white" : "bg-white text-[#223E66] shadow-sm"} p-4 rounded-lg flex items-center justify-between mb-4 shadow-lg transition duration-300 cursor-pointer`}
-            onClick={() => fetchMessages(conversation._id)}
-          >
-            <span className="text-sm">{conversation.name}</span>
-            <div className="flex space-x-2">
-              <button className="cursor-pointer"><CiEdit size={20} /></button>
-              <button onClick={()=>deleteConversation(conversation?._id)} className="cursor-pointer"><MdDeleteOutline size={20} color="#3232KD" /></button>
-            </div>
-          </div>
-        ))}
-</div>
+      {/* Scrollable conversations list */}
+      <div className="h-[20vh] md:h-[70vh] overflow-y-auto p-1">
+        {/* Map through conversations and display each */}
+              {conversations.map((conversation) => (
+                <div
+                  key={conversation._id}
+                  className={`${conversation._id === selectedThreadId ? "bg-[#223E66] text-white" : "bg-white text-[#223E66] shadow-sm"} p-4 rounded-lg flex items-center justify-between mb-4 shadow-lg transition duration-300 cursor-pointer`}
+                  onClick={() => fetchMessages(conversation._id)}
+                >
+                  <span className="text-sm">{conversation.name}</span>
+                  <div className="flex space-x-2">
+                    <button className="cursor-pointer"><CiEdit size={20} /></button>
+                    <button onClick={()=>deleteConversation(conversation?._id)} className="cursor-pointer"><MdDeleteOutline size={20} color="#3232KD" /></button>
+                  </div>
+                </div>
+              ))}
+      </div>
       </div>
 
       {/* Main Chat Area */}
@@ -266,7 +287,8 @@ const fetchConversations = async () => {
           <RiChatNewFill size={20} className="mr-2" />
           Nouveau Chat
         </span>
-      </button></div>
+      </button>
+      </div>
        : 
       <>  <ChatComponent messages={messages} />
 
@@ -350,8 +372,7 @@ const fetchConversations = async () => {
       
       )}
 
-     
-
+    
     </div>
   );
 };

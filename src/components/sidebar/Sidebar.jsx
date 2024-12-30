@@ -10,6 +10,7 @@ import { TbMoneybag } from "react-icons/tb";
 import WordCountProgress from "./WordCountProgress";
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
+
   const location = useLocation();
   const { pathname } = location;
   const trigger = useRef(null);
@@ -96,9 +97,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </div>
 
         {/* WordCountProgress at the bottom */}
-        <div className="p-4">
+        {/* <div className="p-4">
           <WordCountProgress sidebarExpanded={sidebarExpanded} />
-        </div>
+        </div> */}
       </div>
     </div>
   );
