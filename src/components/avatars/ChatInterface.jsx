@@ -86,7 +86,7 @@ const fetchConversations = async () => {
   try {
     // Send the request to the server with assistant_id in the request body and the token in the headers
     const response = await axios.post(
-      'http://localhost:5000/api/v1/conversation',
+      'https://lionfish-app-9xylm.ondigitalocean.app/api/v1/conversation',
       { assistant_id: assistantId }, // Send assistant_id in the request body
       {
        headers

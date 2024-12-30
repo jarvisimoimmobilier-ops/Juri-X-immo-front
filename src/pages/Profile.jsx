@@ -65,7 +65,7 @@ export default function Profile() {
       };
       
       const response = await axios.post(
-        `http://localhost:5000/api/v1/user/uploadProfilePicture`,
+        `https://lionfish-app-9xylm.ondigitalocean.app/api/v1/user/uploadProfilePicture`,
         formData,
         { headers }
       );
