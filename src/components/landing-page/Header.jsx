@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import logo from '../../assets/images/logo.png';
+import React, { useState } from "react";
+import logo from "../../assets/images/logo.png";
 
 const Header = () => {
   const [expanded, setExpanded] = useState(false);
 
   const scrollToFAQ = (e) => {
     e.preventDefault();
-    const faqSection = document.getElementById('faq');
-    faqSection.scrollIntoView({ behavior: 'smooth' });
+    const faqSection = document.getElementById("faq");
+    faqSection.scrollIntoView({ behavior: "smooth" });
     setExpanded(false); // Close mobile menu if open
   };
 
@@ -26,30 +26,22 @@ const Header = () => {
           <div className="hidden lg:flex lg:items-center lg:space-x-4 lg:justify-center">
             <a
               href="#"
-              title="Accueil"
+              title="Features"
               className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-transparent rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
             >
-              Accueil
+              Fonctionnalités
             </a>
 
             <a
               href="#"
-              title="Services"
+              title="Demo"
               className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-transparent rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
             >
-              Services
+              Démo
             </a>
 
             <a
-              href="#"
-              title="Guide"
-              className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-transparent rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
-            >
-              Guide
-            </a>
-
-            <a
-              href="#"
+              href="#faq"
               title="Tarifs"
               className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-transparent rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
             >
@@ -64,32 +56,16 @@ const Header = () => {
             >
               FAQ
             </a>
-
-            <a
-              href="#"
-              title="Nous connaitre"
-              className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-transparent rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
-            >
-              Nous connaitre
-            </a>
-
-            <a
-              href="#"
-              title="Nous contacter"
-              className="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-transparent rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
-            >
-              Nous contacter
-            </a>
           </div>
 
           <div className="hidden ml-auto sm:flex lg:ml-0">
             <a
-              href={token ? 'avatars':'register'}
+              href={token ? "avatars" : "register"}
               title="Start free trial"
               className="inline-flex items-center justify-center px-6 py-2.5 text-base font-medium text-gray-900 transition-all duration-200 border border-gray-900 rounded-full hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
               role="button"
             >
-              Commencer
+              Connexion
             </a>
           </div>
 

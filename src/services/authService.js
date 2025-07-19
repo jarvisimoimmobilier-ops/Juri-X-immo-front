@@ -1,7 +1,9 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const BASE_URL = "https://lionfish-app-9xylm.ondigitalocean.app/api/v1";
+// const BASE_URL = "https://lionfish-app-9xylm.ondigitalocean.app/api/v1";
+
+const BASE_URL = "http://localhost:5000/api/v1";
 
 const handleLogout = (res) => {
   if (res.status === 500) {
