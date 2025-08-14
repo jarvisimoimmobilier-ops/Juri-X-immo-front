@@ -7,6 +7,7 @@ import Payout from './pages/Payout';
 import Login from './pages/Login';
 import Register from './components/auth/Register';
 import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
+import NotFound from './components/NotFound';
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
           }
         />
         <Route
-          path="/payout"
+          path="/abonnements"
           element={
             <PrivateRoute>
               <Layout>
@@ -47,6 +48,8 @@ function App() {
             </PrivateRoute>
           }
         />
+        {/* 404 Not Found route - must be last */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

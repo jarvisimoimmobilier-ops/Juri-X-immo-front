@@ -86,8 +86,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               setSideBarOpen={setSidebarOpen}
             />
             <SideBarOption
-              path="/payout"
-              label="Payout"
+              path="/Abonnements"
+              label="Abonnements"
               icon={TbMoneybag}
               sidebarExpanded={sidebarExpanded}
               pathname={pathname}

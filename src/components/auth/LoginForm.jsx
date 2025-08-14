@@ -1,149 +1,284 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { apiService } from '../../services/authService.js'
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { apiService } from '../../services/authService.js';
 
 const LoginForm = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const [backendError, setBackendError] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // New loading state
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    
+    // Watch password for strength calculation
+    const password = watch('password', '');
+
+    // Password strength calculator
+    const getPasswordStrength = () => {
+        if (!password) return { strength: 0, text: '', color: 'bg-gray-200' };
+        
+        let strength = 0;
+        
+        // Length check
+        if (password.length >= 6) strength++;
+        if (password.length >= 8) strength++;
+        
+        // Character variety checks
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        const strengthLevels = [
+            { strength: 0, text: '', color: 'bg-gray-200' },
+            { strength: 1, text: 'Très faible', color: 'bg-red-500' },
+            { strength: 2, text: 'Faible', color: 'bg-orange-500' },
+            { strength: 3, text: 'Moyen', color: 'bg-yellow-500' },
+            { strength: 4, text: 'Fort', color: 'bg-green-500' },
+            { strength: 5, text: 'Très fort', color: 'bg-green-600' }
+        ];
+        
+        return strengthLevels[strength] || strengthLevels[0];
+    };
+
+    const passwordStrength = getPasswordStrength();
 
     const onSubmit = async (data) => {
-        setIsLoading(true); // Set loading state to true
+        setIsLoading(true);
+        setBackendError(''); // Clear any previous errors
+        
         try {
             const response = await apiService.login({
                 email: data.email,
                 password: data.password,
             });
             console.log('Login successful:', response);
-            navigate('/avatars'); // Redirect on success
+            navigate('/avatars');
         } catch (error) {
-            setBackendError(error.message);
-        }finally{
-            setIsLoading(false); // Set loading state to true
+            setBackendError(error.message || 'Une erreur est survenue lors de la connexion');
+        } finally {
+            setIsLoading(false);
         }
-
     };
 
     return (
-        <section className="py-12 bg-gray-50 sm:py-16 lg:py-20">
-            <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div className="relative max-w-md mx-auto lg:max-w-lg">
-                    <div className="absolute -inset-2">
-                        <div
-                            className="w-full h-full mx-auto rounded-3xl opacity-30 blur-lg filter"
-                            style={{
-                                background:
-                                    'linear-gradient(90deg, #44ff9a -0.55%, #44b0ff 22.86%, #8b44ff 48.36%, #ff6644 73.33%, #ebff70 99.34%)',
-                            }}
-                        ></div>
+        <>
+            <section className="min-h-screen py-4 sm:py-8 lg:py-16 bg-gray-50 relative overflow-hidden">
+                {/* Animated background blobs */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute -inset-10 opacity-50">
+                        <div className="absolute top-0 -left-4 w-40 h-40 md:w-72 md:h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+                        <div className="absolute top-0 -right-4 w-40 h-40 md:w-72 md:h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+                        <div className="absolute -bottom-8 left-20 w-40 h-40 md:w-72 md:h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+                        <div className="absolute bottom-0 right-20 w-40 h-40 md:w-72 md:h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
                     </div>
+                </div>
+                
+                <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 relative z-10">
+                    <div className="relative max-w-sm sm:max-w-md mx-auto lg:max-w-lg">
+                        {/* Animated gradient border */}
+                        <div className="absolute -inset-2 sm:-inset-4">
+                            <div
+                                className="w-full h-full mx-auto rounded-2xl sm:rounded-3xl opacity-75 blur-lg filter animate-gradient"
+                                style={{
+                                    background: 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)',
+                                    backgroundSize: '400% 400%',
+                                }}
+                            ></div>
+                        </div>
 
-                    <div className="relative overflow-hidden bg-white shadow-xl rounded-xl">
-                        <div className="px-4 py-6 sm:px-8">
-                            <div className="flex items-center justify-between">
-                                <h1 className="text-xl font-bold text-gray-900 font-pj">Connexion</h1>
-                                <p className="text-base font-normal text-gray-900 font-pj">
-                                    Vous n'avez pas de compte?{' '}
-                                    <a
-                                        href="/register"
-                                        title=""
-                                        className="font-bold rounded hover:underline focus:outline-none focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"
+                        <div className="relative overflow-hidden bg-white/95 backdrop-blur-lg shadow-xl rounded-xl sm:rounded-2xl border border-white/20">
+                            <div className="p-4 sm:px-8 sm:py-8">
+                                {/* Back button */}
+                                <div className="mb-4">
+                                    <button
+                                        onClick={() => navigate('/')}
+                                        className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200"
                                     >
-                                        Rejoignez-nous
-                                    </a>
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleSubmit(onSubmit)} className="mt-12">
-                                <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="email" className="text-base font-medium text-gray-900 font-pj">
-                                            Email
-                                        </label>
-                                        <div className="mt-2.5">
-                                            <input
-                                                type="email"
-                                                id="email"
-                                                placeholder="Adresse e-mail"
-                                                className="block w-full px-4 py-4 text-gray-900 placeholder-gray-600 bg-white border border-gray-400 rounded-xl focus:border-gray-900 focus:ring-gray-900 caret-gray-900"
-                                                {...register('email', { required: 'L\'email est requis' })}
-                                            />
-                                            {errors.email && (
-                                                <p className="mt-1 text-red-600">{errors.email.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-center justify-between">
-                                            <label htmlFor="password" className="text-base font-medium text-gray-900 font-pj">
-                                                Mot de passe
-                                            </label>
-                                            <a
-                                                href="#"
-                                                title=""
-                                                className="text-base font-medium text-gray-500 rounded font-pj hover:text-gray-900 hover:underline focus:outline-none focus:ring-1 focus:ring-gray-900 focus:ring-offset-2"
-                                            >
-                                                Mot de passe oublié?
-                                            </a>
-                                        </div>
-                                        <div className="mt-2.5">
-                                            <input
-                                                type="password"
-                                                id="password"
-                                                placeholder="Mot de passe (min. 8 caractères)"
-                                                className="block w-full px-4 py-4 text-gray-900 placeholder-gray-600 bg-white border border-gray-400 rounded-xl focus:border-gray-900 focus:ring-gray-900 caret-gray-900"
-                                                {...register('password', { required: 'Le mot de passe est requis', minLength: { value: 6, message: 'Le mot de passe doit comporter au moins 6 caractères' } })}
-                                            />
-                                            {errors.password && (
-                                                <p className="mt-1 text-red-600">{errors.password.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="relative flex items-center mt-4">
-                                        <div className="flex items-center h-5">
-                                            <input
-                                                type="checkbox"
-                                                id="terms"
-                                                className="w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-900"
-                                                {...register('rememberMe')}
-                                            />
-                                        </div>
-                                        <div className="ml-3 text-base">
-                                            <label htmlFor="terms" className="font-normal text-gray-900 font-pj">
-                                                Se souvenir de moi
-                                            </label>
-                                        </div>
-                                    </div>
+                                        <ArrowLeft className="w-4 h-4 mr-2" />
+                                        Retour
+                                    </button>
                                 </div>
 
-                                {backendError && (
-                                    <p className="mt-4 text-red-600 font-medium">
-                                        {backendError}
+                                {/* Responsive header - Improved mobile layout */}
+                                <div className="mb-6 sm:mb-8">
+                                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 font-pj mb-2">
+                                        Connexion
+                                    </h1>
+                                    <p className="text-sm sm:text-base font-normal text-gray-600 font-pj">
+                                        Pas de compte?{' '}
+                                        <a
+                                            href="/register"
+                                            className="font-semibold text-blue-600 hover:text-blue-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-colors duration-200"
+                                        >
+                                            Rejoignez-nous
+                                        </a>
                                     </p>
-                                )}
+                                </div>
 
-                                <button
-                                    type="submit"
-                                    disabled={isLoading} // Disable button when loading
-                                    className="flex items-center justify-center w-full px-8 py-4 mt-5 text-base font-bold text-white transition-all duration-200 bg-gray-900 border border-transparent rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isLoading ? (
-                                        <span className="loader mr-2 w-5 h-5 border-2 border-t-transparent
-                                         border-white rounded-full animate-spin"></span>
-                                    ) : (
-                                        'Connexion'
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
+                                    {/* Email field */}
+                                    <div>
+                                        <label htmlFor="email" className="block text-sm sm:text-base font-medium text-gray-900 font-pj mb-2">
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            placeholder="Adresse e-mail"
+                                            className="block w-full px-4 py-3 sm:py-4 text-sm sm:text-base text-gray-900 placeholder-gray-500 bg-white/50 backdrop-blur-sm border border-gray-300 rounded-lg sm:rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500 caret-gray-900 transition-all duration-200"
+                                            {...register('email', { 
+                                                required: 'L\'email est requis',
+                                                pattern: {
+                                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                                    message: 'Adresse email invalide'
+                                                }
+                                            })}
+                                        />
+                                        {errors.email && (
+                                            <p className="mt-1 text-xs sm:text-sm text-red-600">
+                                                {errors.email.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                   {/* Password field */}
+<div>
+  <div className="flex items-center justify-between mb-2">
+    <label htmlFor="password" className="text-sm sm:text-base font-medium text-gray-900 font-pj">
+      Mot de passe
+    </label>
+    <a
+      href="/forgot-password"
+      className="text-xs sm:text-sm font-medium text-gray-500 rounded font-pj hover:text-gray-900 hover:underline focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+    >
+      Mot de passe oublié?
+    </a>
+  </div>
+
+  {/* keep only the input + eye inside this relative wrapper */}
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      id="password"
+      placeholder="Mot de passe (min. 6 caractères)"
+      className="block w-full px-4 py-3 sm:py-4 pr-12 text-sm sm:text-base text-gray-900
+                 placeholder-gray-500 bg-white/50 backdrop-blur-sm border
+                 border-gray-300 rounded-lg sm:rounded-xl focus:border-blue-500
+                 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 caret-gray-900
+                 transition-all duration-200"
+      {...register('password', {
+        required: 'Le mot de passe est requis',
+        minLength: { value: 6, message: 'Le mot de passe doit comporter au moins 6 caractères' }
+      })}
+    />
+
+    {/* Show/Hide password button – pinned to input center */}
+    <button
+      type="button"
+      aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+    >
+      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+    </button>
+  </div>
+
+  {/* render strength indicator OUTSIDE the relative wrapper */}
+  {password && (
+    <div className="mt-2">
+      {/* ... strength label + bar exactly as you had ... */}
+    </div>
+  )}
+
+  {errors.password && (
+    <p className="mt-1 text-xs sm:text-sm text-red-600">
+      {errors.password.message}
+    </p>
+  )}
+</div>
+
+
+                                    {/* Remember me checkbox */}
+                                    <div className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            id="rememberMe"
+                                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                            {...register('rememberMe')}
+                                        />
+                                        <label htmlFor="rememberMe" className="ml-2 text-sm font-normal text-gray-700 font-pj">
+                                            Se souvenir de moi
+                                        </label>
+                                    </div>
+
+                                    {/* Backend error message */}
+                                    {backendError && (
+                                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                            <p className="text-sm text-red-600 font-medium">
+                                                {backendError}
+                                            </p>
+                                        </div>
                                     )}
-                                </button>
-                            </form>
+
+                                    {/* Submit button */}
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="flex items-center justify-center w-full px-6 py-3 sm:py-4 text-sm sm:text-base font-bold text-white transition-all duration-200 bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 border border-transparent rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 font-pj transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Connexion en cours...
+                                            </>
+                                        ) : (
+                                            'Connexion'
+                                        )}
+                                    </button>
+
+                                    {/* Divider */}
+                                    <div className="relative">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full border-t border-gray-300"></div>
+                                        </div>
+                                        <div className="relative flex justify-center text-sm">
+                                            <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Social login buttons */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            type="button"
+                                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white/70 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
+                                        >
+                                            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" clipRule="evenodd" />
+                                            </svg>
+                                            <span className="ml-2">Facebook</span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white/70 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
+                                        >
+                                            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M10.205 2.004c4.975 0 9.01 4.036 9.01 9.01 0 3.981-2.583 7.356-6.161 8.544-.45.082-.615-.195-.615-.435 0-.296.01-1.272.01-2.48 0-.844-.289-1.395-.613-1.676 2.01-.224 4.124-.988 4.124-4.458 0-.985-.351-1.79-.929-2.421.093-.229.403-1.146-.089-2.388 0 0-.757-.243-2.48.925a8.627 8.627 0 00-2.261-.304 8.627 8.627 0 00-2.261.304c-1.724-1.168-2.48-.925-2.48-.925-.492 1.242-.182 2.16-.089 2.388-.578.631-.929 1.436-.929 2.421 0 3.46 2.11 4.238 4.113 4.463-.258.226-.492.624-.574 1.208-.515.231-1.823.63-2.625-.75 0 0-.477-1.017-1.382-1.092 0 0-.88-.011-.062.546 0 0 .591.278 1.002 1.32 0 0 .529 1.612 3.038 1.067.004.752.012 1.304.012 1.508 0 .238-.165.515-.61.436-3.581-1.186-6.167-4.563-6.167-8.544 0-4.974 4.036-9.01 9.01-9.01z" />
+                                            </svg>
+                                            <span className="ml-2">GitHub</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </>
     );
 };
 

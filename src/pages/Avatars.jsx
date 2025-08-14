@@ -1,17 +1,17 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChatbotCards from '../components/avatars/ChatbotCards';
 import ChatInterface from '../components/avatars/ChatInterface';
 import avatartpro from './../assets/images/avatartpro.png';
 import avatarindividual from './../assets/images/avatarindividual.png';
 import axios from 'axios';
 import { apiService } from '../services/authService';
+import { Wallet, User, Building2 } from 'lucide-react';
 
 export default function Avatars() {
   // State to store the active tab and the assistant_id value
   const [activeTab, setActiveTab] = useState('ChatbotIndividuel');
   const [assistantId, setAssistantId] = useState("1"); // Default to assistant_id = 1
   const [userData, setUserData] = useState(null);
-
 
   // Function to handle tab change and set the corresponding assistant_id
   const handleTabChange = (tab) => {
@@ -24,7 +24,6 @@ export default function Avatars() {
   };
 
   useEffect(() => {
-
     const fetchUserData = async () => {
       try {
         const response = await apiService.get('/user');
@@ -37,39 +36,58 @@ export default function Avatars() {
     fetchUserData();
   }, []);
 
-
-    // Find the balance based on the selected avatar_id
-    const selectedBalance = userData?.app_user?.balances.find(
-      (balance) => balance.avatar_id === assistantId
-    )?.balance;
+  // Find the balance based on the selected avatar_id
+  const selectedBalance = userData?.app_user?.balances.find(
+    (balance) => balance.avatar_id === assistantId
+  )?.balance;
 
   return (
-    <main className="flex w-full min-h-screen flex-col">
-      {/* <ChatbotCards /> */}
-      <div className="w-full flex md:justify-between md:flex-row flex-col  pb-1 md:px-2 px-1 overflow-x-auto mb-2">
-        <div className="border-b">
-          <nav className="flex space-x-10">
-            <button
-              onClick={() => handleTabChange('ChatbotIndividuel')}
-              className={`py-4 text-sm flex justify-between font-medium ${activeTab === 'ChatbotIndividuel' ? 'text-customBlue border-b-2 border-customBlue' : 'text-gray-500 hover:border-gray-300'} transition-all duration-200 whitespace-nowrap`}
-            >
-               <img className='w-8 h-8' src={avatarindividual} alt="Avatar Individual Logo" />
-            <span className='mt-2 ml-2'> Chatbot Individuel </span>
-            </button>
+    <main className="flex w-full max-h-screen flex-col ">
+      {/* Minimal Compact Navigation */}
+      <div className="w-full bg-white border-b border-gray-200 sticky top-0">
+        <div className="px-3 sm:px-4">
+          <div className="flex items-center justify-between py-2">
+            
+            {/* Compact Tab Navigation */}
+            <div className="flex bg-gray-100 rounded-lg py-1 px-0.5">
+              {/* Individual Tab */}
+              <button
+                onClick={() => handleTabChange('ChatbotIndividuel')}
+                className={`flex items-center px-3 py-3 rounded-md text-xs font-medium transition-all duration-200 ${
+                  activeTab === 'ChatbotIndividuel'
+                    ? 'bg-white text-[#223E66] shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <User className="w-3.5 h-3.5 mr-1.5" />
+                <span>Individuel</span>
+              </button>
 
-            <button
-              onClick={() => handleTabChange('ChatbotPro')}
-              className={`py-4 text-sm flex justify-between  font-medium ${activeTab === 'ChatbotPro' ? 'text-customBlue border-b-2 border-customBlue' : 'text-gray-500 hover:border-gray-300'} transition-all duration-200 whitespace-nowrap`}
-            >
-              <img className='w-8 h-8' src={avatartpro} alt="Avatar Pro Logo" />
-              <span className='mt-2 ml-2'>              Chatbot Pro </span>
-            </button>
-          </nav>
-        </div>
+              {/* Pro Tab */}
+              <button
+                onClick={() => handleTabChange('ChatbotPro')}
+                className={`flex items-center px-3 py-3 rounded-md text-xs font-medium transition-all duration-200 ${
+                  activeTab === 'ChatbotPro'
+                    ? 'bg-white text-[#223E66] shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Building2 className="w-3.5 h-3.5 mr-1.5" />
+                <span>Pro</span>
+              </button>
+            </div>
 
-        <div className="flex md:my-0 my-3   justify-center items-center">
-        <span className='font-bold mr-2'>Solde:</span> 
-        {selectedBalance !== undefined ? `${selectedBalance.toFixed(2)} $` : 'Loading...'}
+            {/* Compact Balance Display */}
+            <div className="flex items-center bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
+              <Wallet className="w-3.5 h-3.5 text-green-600 mr-2" />
+              <div className="flex items-center space-x-1">
+                <span className="text-xs text-green-600 font-medium">Solde:</span>
+                <span className="text-sm font-bold text-green-900">
+                  {selectedBalance !== undefined ? `${selectedBalance.toFixed(2)}€` : '--'}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

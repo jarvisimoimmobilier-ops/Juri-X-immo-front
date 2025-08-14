@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
   const path = location.pathname.substring(1);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-x-hidden overflow-y-hidden   ">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">

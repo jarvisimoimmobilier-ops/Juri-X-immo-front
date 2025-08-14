@@ -1,125 +1,270 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteOutline } from "react-icons/md";
-import { RiChatNewFill } from "react-icons/ri";
-import logo from '../../assets/images/logo.png';
+import { Plus, MessageCircle, Edit3, Trash2, Send, X, Bot, User, Menu, Search } from 'lucide-react';
 
-import user from '../../assets/images/user.png';
-import { apiService } from '../../services/authService.js'
+// Import your API service
+import { apiService } from '../../services/authService.js';
 
-const ChatComponent = ({ messages }) => {
+// Conversations Modal Component
+const ConversationsModal = ({ 
+  isOpen, 
+  onClose, 
+  conversations, 
+  selectedThreadId, 
+  onSelectConversation, 
+  onCreateNew, 
+  onDeleteConversation 
+}) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newConversationName, setNewConversationName] = useState('');
 
+  const filteredConversations = conversations.filter(conv =>
+    conv.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleCreateConversation = () => {
+    if (newConversationName.trim()) {
+      onCreateNew(newConversationName);
+      setNewConversationName('');
+      setShowCreateModal(false);
+      onClose();
+    }
+  };
+
+  const handleSelectConversation = (conversation) => {
+    onSelectConversation(conversation);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden">
+        {/* Modal Container */}
+        <div className="fixed inset-x-0 top-0 bottom-0 bg-white flex flex-col animate-in slide-in-from-bottom duration-300">
+          {/* Header */}
+          <div className="flex-shrink-0 px-4 py-4 border-b border-gray-200 bg-white">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Conversations</h2>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher une conversation..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              />
+            </div>
+
+            {/* New Chat Button */}
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="w-full flex items-center justify-center px-4 py-3 bg-[#223E66] text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Nouveau Chat
+            </button>
+          </div>
+
+          {/* Conversations List */}
+          <div className="flex-1 overflow-y-auto px-2 py-2">
+            {filteredConversations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <MessageCircle className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {searchTerm ? 'Aucun résultat' : 'Aucune conversation'}
+                </h3>
+                <p className="text-gray-500 text-sm px-4">
+                  {searchTerm 
+                    ? 'Essayez avec un autre terme de recherche' 
+                    : 'Créez votre première conversation pour commencer'
+                  }
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {filteredConversations.map((conversation) => (
+                  <div
+                    key={conversation._id}
+                    className="group relative"
+                  >
+                    <div
+                      onClick={() => handleSelectConversation(conversation)}
+                      className={`
+                        w-full p-4 rounded-xl cursor-pointer transition-all duration-200 border
+                        ${conversation._id === selectedThreadId 
+                          ? 'bg-blue-50 border-blue-200 shadow-sm' 
+                          : 'bg-white border-gray-100 hover:bg-gray-50 hover:border-gray-200'
+                        }
+                      `}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <h4 className={`font-medium text-sm mb-1 line-clamp-2 ${
+                            conversation._id === selectedThreadId ? 'text-blue-900' : 'text-gray-900'
+                          }`}>
+                            {conversation.name}
+                          </h4>
+                          <p className="text-xs text-gray-500">
+                            {new Date(conversation.creation_date).toLocaleDateString('fr-FR', {
+                              day: 'numeric',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center space-x-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Handle edit - you can implement this later
+                            }}
+                            className="p-2 hover:bg-gray-200 rounded-lg"
+                          >
+                            <Edit3 className="w-4 h-4 text-gray-500" />
+                          </button>
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteConversation(conversation._id, e);
+                            }}
+                            className="p-2 hover:bg-red-100 rounded-lg"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Create New Conversation Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-end justify-center p-4 z-60 lg:hidden">
+          <div className="bg-white rounded-t-3xl w-full max-w-md animate-in slide-in-from-bottom duration-300">
+            <div className="p-6">
+              <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+              
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                Nouvelle conversation
+              </h3>
+              
+              <input
+                type="text"
+                placeholder="Nom de la conversation"
+                value={newConversationName}
+                onChange={(e) => setNewConversationName(e.target.value)}
+                className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-6 text-base"
+                onKeyDown={(e) => e.key === 'Enter' && handleCreateConversation()}
+                autoFocus
+              />
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  className="flex-1 px-4 py-3 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleCreateConversation}
+                  disabled={!newConversationName.trim()}
+                  className="flex-1 px-4 py-3 bg-[#223E66] text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                  Créer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+// Main Chat Interface Component
+const ChatInterface = ({ assistantId }) => {
+  const [conversations, setConversations] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [selectedThreadId, setSelectedThreadId] = useState(null);
+  const [userInput, setUserInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [conversationsModalOpen, setConversationsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newConversationName, setNewConversationName] = useState('');
   const messageListRef = useRef(null);
+  const textareaRef = useRef(null);
 
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
   }, [messages]);
 
-  return (
-    <div className="flex-grow flex flex-col max-h-[70vh]  rounded-lg ">
-      <div className="flex-grow p-6 overflow-y-auto bg-orange-50 rounded-md" ref={messageListRef}>
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex items-start mb-4 ${
-              message.type === 'userMessage' ? 'justify-end' : 'justify-start'
-            }`}
-          >
-            {message.type === 'apiMessage' && (
-              <img
-                src={logo}
-                alt="AI"
-                width={30}
-                height={30}
-                className="mr-3"
-              />
-            )}
-            <div
-              className={`p-3 rounded-lg  ${
-                message.type === 'userMessage'
-                  ? 'bg-customBlue text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              <ReactMarkdown>{message.message}</ReactMarkdown>
-            </div>
-            {message.type === 'userMessage' && (
-              <img
-                src={user}
-                alt="User"
-                width={30}
-                height={30}
-                className="ml-3"
-              />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const ChatInterface = ({assistantId}) => {
-
-  const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [selectedThreadId, setSelectedThreadId] = useState(null);
-  const [userInput, setUserInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newConversationName, setNewConversationName] = useState('');
-
-// Fetch conversations
-const fetchConversations = async () => {
-  // const token = localStorage.getItem('token'); // Get token from localStorage
-
-  // if (!token) {
-  //   console.error("No token found. Please log in.");
-  //   return; // Return early if no token is found
-  // }
-  const headers = { Authorization: localStorage.getItem("token") };
-
-  try {
-    // Send the request to the server with assistant_id in the request body and the token in the headers
-    const response = await axios.post(
-      'https://lionfish-app-9xylm.ondigitalocean.app/api/v1/conversation',
-      { assistant_id: assistantId }, // Send assistant_id in the request body
-      {
-       headers
-      }
-    );
-    // Sort conversations by creation_date (new to old)
-    const sortedConversations = response.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
-
-    // Update state with sorted conversations
-    setConversations(sortedConversations);
-
-    // Set the first conversation as selected if it exists
-    if (sortedConversations[0]) {
-      setSelectedThreadId(sortedConversations[0]._id);
-      fetchMessages(sortedConversations[0]._id);
+  // Auto-resize textarea
+  const adjustTextareaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
-  } catch (error) {
-    console.error('Error fetching conversations:', error);
-  }
-};
-
-
-  // Fetch conversations on component mount
-  useEffect(() => {
-    fetchConversations();
-  }, []);
+  };
 
   useEffect(() => {
-    fetchConversations();
+    adjustTextareaHeight();
+  }, [userInput]);
+
+  // Fetch conversations
+  const fetchConversations = async () => {
+    const headers = { Authorization: localStorage.getItem("token") };
+    try {
+      const response = await axios.post(
+        'https://lionfish-app-9xylm.ondigitalocean.app/api/v1/conversation',
+        { assistant_id: assistantId },
+        { headers }
+      );
+      const sortedConversations = response.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
+      setConversations(sortedConversations);
+
+      if (sortedConversations[0]) {
+        setSelectedThreadId(sortedConversations[0]._id);
+        fetchMessages(sortedConversations[0]._id);
+      }
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (assistantId) {
+      fetchConversations();
+    }
   }, [assistantId]);
 
-  
-// Fetch messages for a specific conversation
+  // Fetch messages for a specific conversation
   const fetchMessages = async (threadId) => {
     try {
       const response = await apiService.get(`/conversation/${threadId}`);
@@ -135,13 +280,9 @@ const fetchConversations = async () => {
     }
   };
 
-  // Open modal to name the new conversation
-  const openNewChatModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Handle new conversation creation
+  // Create new conversation (original modal functionality)
   const createNewConversation = async () => {
+    if (!newConversationName.trim()) return;
     setIsModalOpen(false);
     try {
       const requestData = {
@@ -149,21 +290,27 @@ const fetchConversations = async () => {
         assistant_id: Number(assistantId),
       };
       const response = await apiService.post('/conversation/start', requestData);
-      const newConversation = response.data;
-      // setConversations((prevConversations) => [newConversation, ...prevConversations]);
-
-     fetchConversations()
-
-       // Sort conversations by creation_date (new to old)
-      const sortedConversations = conversationsResponse.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
-
-      setConversations(sortedConversations);
+      await fetchConversations();
       setSelectedThreadId(response.data?.thread_id);
-      console.log(response.data)
-      fetchMessages(response.data?.thread_id)
+      fetchMessages(response.data?.thread_id);
       setMessages([]);
       setNewConversationName('');
+    } catch (error) {
+      console.error('Error creating new conversation:', error);
+    }
+  };
 
+  // Create new conversation from mobile modal
+  const createNewConversationMobile = async (name) => {
+    try {
+      const requestData = {
+        name: name,
+        assistant_id: Number(assistantId),
+      };
+      const response = await apiService.post('/conversation/start', requestData);
+      await fetchConversations();
+      setSelectedThreadId(response.data?.thread_id);
+      setMessages([]);
     } catch (error) {
       console.error('Error creating new conversation:', error);
     }
@@ -171,208 +318,320 @@ const fetchConversations = async () => {
 
   // Send user message
   const handleSendMessage = async () => {
-    if (!userInput.trim()) return;
+    if (!userInput.trim() || loading) return;
     setLoading(true);
 
-    // Append the user's message to the messages list
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { message: userInput, type: 'userMessage' },
-    ]);
+    const userMessage = { message: userInput, type: 'userMessage' };
+    setMessages((prev) => [...prev, userMessage]);
+    const currentInput = userInput;
+    setUserInput('');
 
     try {
       const requestData = {
         thread_id: selectedThreadId,
-        message: userInput,
+        message: currentInput,
       };
       const response = await apiService.post('/conversation/send', requestData);
-      const assistantResponse = response.data.response;
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { message: assistantResponse, type: 'apiMessage' },
+      setMessages((prev) => [
+        ...prev,
+        { message: response.data.response, type: 'apiMessage' },
       ]);
     } catch (error) {
       console.error('Error sending message:', error);
+      // Remove user message on error
+      setMessages((prev) => prev.slice(0, -1));
+      setUserInput(currentInput);
     } finally {
-      setUserInput('');
       setLoading(false);
     }
   };
 
- // Delete a conversation
-  const deleteConversation = async (threadId) => {
+  // Delete conversation
+  const deleteConversation = async (threadId, e) => {
+    e.stopPropagation();
     try {
       await apiService.delete('/conversation', threadId);
-      setConversations((prevConversations) => {
-        const updatedConversations = prevConversations.filter(
-          (conversation) => conversation._id !== threadId
-        );
-
-        // Set selectedThreadId to the first conversation's _id if available, else null
-        setSelectedThreadId(updatedConversations[0]?._id || null);
-        fetchMessages(updatedConversations[0]?._id || null)
-        return updatedConversations;
+      setConversations((prev) => {
+        const updated = prev.filter((conv) => conv._id !== threadId);
+        setSelectedThreadId(updated[0]?._id || null);
+        if (updated[0]) {
+          fetchMessages(updated[0]._id);
+        } else {
+          setMessages([]);
+        }
+        return updated;
       });
-     
-
-      console.log(`Conversation with thread ID ${threadId} deleted successfully`);
     } catch (error) {
       console.error('Error deleting conversation:', error);
     }
   };
 
-
-  const handleEnter = (e) => {
-    if (e.key === 'Enter' && userInput) {
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const handleSelectConversation = (conversation) => {
+    fetchMessages(conversation._id);
+  };
 
+  const currentConversation = conversations.find(c => c._id === selectedThreadId);
 
   return (
-    <div className="flex flex-col md:flex-row 
-    h-screen bg-gray-100 w-full rounded-md">
-
-      {/* Sidebar */}
-      <div className="w-full md:flex-[0.25] h-full
-       md:h-screen bg-blue-50 p-2 md:p-4">
-
-        <button
-          className="flex items-center w-full p-3 mb-6 border border-[#223E66] text-white rounded-lg shadow-md transition duration-300"
-          onClick={openNewChatModal}
-        >
-          <span className="text-sm font-semibold text-[#223E66] flex justify-start items-center">
-            <RiChatNewFill size={20} className="mr-2" />
+    <div className="flex h-[calc(94vh-8rem)] bg-white rounded-lg border border-gray-200 overflow-hidden">
+      {/* Desktop Sidebar - Hidden on Mobile */}
+      <div className="hidden lg:flex w-80 bg-gray-50 border-r border-gray-200 flex-col">
+        {/* Desktop Sidebar Content */}
+        <div className="p-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Conversations</h2>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="w-full flex items-center justify-center px-4 py-2.5 bg-[#223E66] text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+          >
+            <Plus className="w-4 h-4 mr-2" />
             Nouveau Chat
-          </span>
-        </button>
+          </button>
+        </div>
 
-        <div className="text-gray-700 
-        text-sm font-semibold mb-4">Chat History</div>
-
-      {/* Scrollable conversations list */}
-      <div className="h-[20vh] md:h-[70vh] overflow-y-auto p-1">
-        {/* Map through conversations and display each */}
+        <div className="flex-1 overflow-y-auto p-2">
+          {conversations.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <MessageCircle className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+              <p className="text-sm">Aucune conversation</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
               {conversations.map((conversation) => (
                 <div
                   key={conversation._id}
-                  className={`${conversation._id === selectedThreadId ? "bg-[#223E66] text-white" : "bg-white text-[#223E66] shadow-sm"} p-4 rounded-lg flex items-center justify-between mb-4 shadow-lg transition duration-300 cursor-pointer`}
-                  onClick={() => fetchMessages(conversation._id)}
+                  onClick={() => handleSelectConversation(conversation)}
+                  className={`
+                    group relative p-3 rounded-lg cursor-pointer transition-all duration-200
+                    ${conversation._id === selectedThreadId 
+                      ? 'bg-blue-100 border border-blue-200' 
+                      : 'hover:bg-gray-100 border border-transparent'
+                    }
+                  `}
                 >
-                  <span className="text-sm">{conversation.name}</span>
-                  <div className="flex space-x-2">
-                    <button className="cursor-pointer"><CiEdit size={20} /></button>
-                    <button onClick={()=>deleteConversation(conversation?._id)} className="cursor-pointer"><MdDeleteOutline size={20} color="#3232KD" /></button>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm font-medium truncate flex-1 mr-2 ${
+                      conversation._id === selectedThreadId ? 'text-blue-900' : 'text-gray-700'
+                    }`}>
+                      {conversation.name}
+                    </span>
+                    
+                    <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="p-1 hover:bg-gray-200 rounded">
+                        <Edit3 className="w-3 h-3 text-gray-500" />
+                      </button>
+                      <button 
+                        onClick={(e) => deleteConversation(conversation._id, e)}
+                        className="p-1 hover:bg-red-100 rounded"
+                      >
+                        <Trash2 className="w-3 h-3 text-red-500" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
-      </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-grow md:flex-[0.75]
-       w-full flex flex-col p-2 md:px-3 md:py-2 bg-blue-50">
+      <div className="flex-1 flex flex-col min-w-0 h-full">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+          <button
+            onClick={() => setConversationsModalOpen(true)}
+            className="flex items-center space-x-3 flex-1 text-left"
+          >
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <MessageCircle className="w-5 h-5 text-gray-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-semibold text-gray-900 truncate">
+                {currentConversation?.name || 'Assistant IA'}
+              </h1>
+              <p className="text-sm text-gray-500">
+                Conversations
+              </p>
+            </div>
+          </button>
+        </div>
 
-      {conversations.length === 0 ?  
-     <div className='flex justify-center bg-white flex-col h-[70vh] text-center items-center'>
-        <span className='mb-2'> Aucune conversation de chat n'a été créée pour le moment.</span>
-         <button
-        className="flex items-center max-w-md p-3 mb-6 border bg-customBlue border-customOrange text-white rounded-lg shadow-md transition duration-300"
-        onClick={openNewChatModal}
-      >
-        <span className="text-sm font-semibold text-customOrange  flex justify-start items-center">
-          <RiChatNewFill size={20} className="mr-2" />
-          Nouveau Chat
-        </span>
-      </button>
-      </div>
-       : 
-      <>  <ChatComponent messages={messages} />
+        {/* Desktop Header */}
+        <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-3 border-b border-gray-200 bg-white">
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">Assistant IA</h1>
+            <p className="text-sm text-gray-500">
+              {currentConversation?.name || 'Sélectionnez une conversation'}
+            </p>
+          </div>
+        </div>
 
-        <div className="p-3 border-t  rounded-b-lg">
-          <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex items-center">
-            <textarea
-              disabled={loading}
-              onKeyDown={handleEnter}
-              rows={1}
-              maxLength={512}
-              placeholder={loading ? "En attente de réponse..." : "Tapez votre message..."}
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              className="
-              border block w-full px-4 py-3 placeholder-gray-500 border-gray-300 rounded-lg focus:ring-customBlue focus:border-customBlue sm:text-sm caret-customBlue
-              "
-            />
+        {/* Chat Content */}
+        {conversations.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+              <MessageCircle className="w-10 h-10 text-[#223E66]" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Aucune conversation
+            </h3>
+            <p className="text-gray-500 mb-6 max-w-md">
+              Créez votre première conversation pour commencer à discuter avec l'assistant IA.
+            </p>
             <button
-              type="submit"
-              disabled={loading}
-              className="rounded-full  text-white"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center px-6 py-3 bg-[#223E66] text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
             >
-              {loading ? 
-              <div className="ml-3 bg-customBlue py-3 px-3 rounded-full">
-  <svg  height="10" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" fill="#ffffff">
-    <circle cx="15" cy="15" r="12">
-      <animate attributeName="r" from="12" to="12" begin="0s" dur="0.8s" values="12;6;12" calcMode="linear" repeatCount="indefinite" />
-      <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
-    </circle>
-    <circle cx="60" cy="15" r="6" fill-opacity="0.3">
-      <animate attributeName="r" from="6" to="6" begin="0s" dur="0.8s" values="6;12;6" calcMode="linear" repeatCount="indefinite" />
-      <animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite" />
-    </circle>
-    <circle cx="105" cy="15" r="12">
-      <animate attributeName="r" from="12" to="12" begin="0s" dur="0.8s" values="12;6;12" calcMode="linear" repeatCount="indefinite" />
-      <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
-    </circle>
-  </svg>
-</div>
-
-
- : <span className='text-sm py-2 px-3 ml-3 bg-customBlue rounded-full'>Envoyer</span>
- }
+              <Plus className="w-4 h-4 mr-2" />
+              Créer une conversation
             </button>
-          </form>
-        </div>
-</> 
-      }
+          </div>
+        ) : (
+          <>
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white" ref={messageListRef}>
+              {messages.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center px-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <Bot className="w-8 h-8 text-[#223E66]" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Commencez une conversation</h3>
+                  <p className="text-sm text-gray-500 max-w-sm">
+                    Posez une question ou demandez de l'aide à votre assistant IA
+                  </p>
+                </div>
+              ) : (
+                messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-end space-x-2 ${
+                      message.type === 'userMessage' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    {message.type === 'apiMessage' && (
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-4 h-4 text-[#223E66]" />
+                      </div>
+                    )}
+                    
+                    <div
+                      className={`max-w-[85%] sm:max-w-[70%] px-4 py-3 rounded-2xl ${
+                        message.type === 'userMessage'
+                          ? 'bg-[#223E66] text-white rounded-br-md'
+                          : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm'
+                      }`}
+                    >
+                      <div className={`prose prose-sm max-w-none ${
+                        message.type === 'userMessage' ? 'prose-invert' : ''
+                      }`}>
+                        <ReactMarkdown>{message.message}</ReactMarkdown>
+                      </div>
+                    </div>
 
-     
+                    {message.type === 'userMessage' && (
+                      <div className="w-8 h-8 bg-[#223E66] rounded-full flex items-center justify-center flex-shrink-0">
+                        <User className="w-4 h-4 text-white" />
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+            
+            {/* Message Input */}
+            <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+              <div className="flex items-end space-x-3 max-w-4xl mx-auto">
+                <div className="flex-1 relative">
+                  <textarea
+                    ref={textareaRef}
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={loading}
+                    placeholder={loading ? "En attente de réponse..." : "Tapez votre message..."}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base"
+                    style={{ minHeight: '48px', maxHeight: '120px' }}
+                    rows={1}
+                  />
+                </div>
+                
+                <button
+                  onClick={handleSendMessage}
+                  disabled={loading || !userInput.trim()}
+                  className="flex items-center justify-center w-12 h-12 bg-[#223E66] text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex-shrink-0"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Modal for Naming New Conversation */}
+      {/* Mobile Conversations Modal */}
+      <ConversationsModal
+        isOpen={conversationsModalOpen}
+        onClose={() => setConversationsModalOpen(false)}
+        conversations={conversations}
+        selectedThreadId={selectedThreadId}
+        onSelectConversation={handleSelectConversation}
+        onCreateNew={createNewConversationMobile}
+        onDeleteConversation={deleteConversation}
+      />
+      {/* Original New Conversation Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-4/5 md:w-1/3 relative">
-          {/* Close icon in the top right */}
-          <button
-            onClick={closeModal} // Function to close the modal
-            className="absolute top-2 text-xl right-5 font-bold text-red-500 hover:text-gray-700"
-          >
-            &times;
-          </button>
-          
-          <h2 className="text-lg font-bold mb-4">Start a New Conversation</h2>
-          <input
-            type="text"
-            placeholder="Enter conversation name"
-            value={newConversationName}
-            onChange={(e) => setNewConversationName(e.target.value)}
-            className="w-full p-2 border rounded mb-4"
-          />
-          <button
-            onClick={createNewConversation}
-            className="p-2 w-full bg-customBlue text-white rounded hover:bg-blue-700 transition"
-          >
-            Start Conversation
-          </button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Nouvelle conversation</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 hover:bg-gray-100 rounded-md"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <input
+                type="text"
+                placeholder="Nom de la conversation"
+                value={newConversationName}
+                onChange={(e) => setNewConversationName(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4"
+                onKeyDown={(e) => e.key === 'Enter' && createNewConversation()}
+              />
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={createNewConversation}
+                  disabled={!newConversationName.trim()}
+                  className="flex-1 px-4 py-2 bg-[#223E66] text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Créer
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      
       )}
-
-    
     </div>
   );
 };
