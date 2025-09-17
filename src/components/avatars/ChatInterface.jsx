@@ -71,13 +71,13 @@ const ConversationsModal = ({
             </div>
 
             {/* New Chat Button */}
-            <button
+            {/* <button
               onClick={() => setShowCreateModal(true)}
               className="w-full flex items-center justify-center px-4 py-3 bg-[#223E66] text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm"
             >
               <Plus className="w-5 h-5 mr-2" />
               Nouveau Chat
-            </button>
+            </button> */}
           </div>
 
           {/* Conversations List */}
@@ -387,7 +387,7 @@ const ChatInterface = ({ assistantId }) => {
         <div className="p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Conversations</h2>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setShowCreateModal(true)}
             className="w-full flex items-center justify-center px-4 py-2.5 bg-[#223E66] text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -443,7 +443,7 @@ const ChatInterface = ({ assistantId }) => {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0 h-full">
-        {/* Mobile Header */}
+       {/* Mobile Header */}
         <div className="lg:hidden flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-200 bg-white">
           <button
             onClick={() => setConversationsModalOpen(true)}
@@ -460,6 +460,15 @@ const ChatInterface = ({ assistantId }) => {
                 Conversations
               </p>
             </div>
+          </button>
+          
+          {/* New Chat Button for Mobile */}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="ml-3 p-2.5 bg-[#223E66] text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex-shrink-0"
+            title="Nouvelle conversation"
+          >
+            <Plus className="w-5 h-5" />
           </button>
         </div>
 
@@ -545,36 +554,40 @@ const ChatInterface = ({ assistantId }) => {
               )}
             </div>
             
-            {/* Message Input */}
-            <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
-              <div className="flex items-end space-x-3 max-w-4xl mx-auto">
-                <div className="flex-1 relative">
-                  <textarea
-                    ref={textareaRef}
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    disabled={loading}
-                    placeholder={loading ? "En attente de réponse..." : "Tapez votre message..."}
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base"
-                    style={{ minHeight: '48px', maxHeight: '120px' }}
-                    rows={1}
-                  />
-                </div>
-                
-                <button
-                  onClick={handleSendMessage}
-                  disabled={loading || !userInput.trim()}
-                  className="flex items-center justify-center w-12 h-12 bg-[#223E66] text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex-shrink-0"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div>
+           {/* Message Input */}
+{/* Message Input */}
+<div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+  <div className="flex items-center space-x-3 max-w-4xl mx-auto">
+    <div className="flex-1 relative min-w-0">
+      <textarea
+        ref={textareaRef}
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={loading}
+        placeholder={loading ? "En attente de réponse..." : "Tapez votre message..."}
+        className="w-full px-4 py-3 pr-4 border border-gray-300 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-base leading-5"
+        style={{ 
+          minHeight: '48px', 
+          maxHeight: '120px'
+        }}
+        rows={1}
+      />
+    </div>
+    
+    <button
+      onClick={handleSendMessage}
+      disabled={loading || !userInput.trim()}
+      className="flex items-center justify-center mb-2 w-12 h-12 bg-[#223E66] text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex-shrink-0"
+    >
+      {loading ? (
+        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+      ) : (
+        <Send className="w-5 h-5" />
+      )}
+    </button>
+  </div>
+</div>
           </>
         )}
       </div>
