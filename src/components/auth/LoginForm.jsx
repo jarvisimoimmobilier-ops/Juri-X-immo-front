@@ -148,12 +148,12 @@ const LoginForm = () => {
     <label htmlFor="password" className="text-sm sm:text-base font-medium text-gray-900 font-pj">
       Mot de passe
     </label>
-    <a
+    {/* <a
       href="/forgot-password"
       className="text-xs sm:text-sm font-medium text-gray-500 rounded font-pj hover:text-gray-900 hover:underline focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
     >
       Mot de passe oublié?
-    </a>
+    </a> */}
   </div>
 
   {/* keep only the input + eye inside this relative wrapper */}
