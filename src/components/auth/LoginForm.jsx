@@ -240,38 +240,6 @@ const LoginForm = () => {
                                         )}
                                     </button>
 
-                                    {/* Divider */}
-                                    <div className="relative">
-                                        <div className="absolute inset-0 flex items-center">
-                                            <div className="w-full border-t border-gray-300"></div>
-                                        </div>
-                                        <div className="relative flex justify-center text-sm">
-                                            <span className="px-2 bg-white text-gray-500">Ou continuer avec</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Social login buttons */}
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <button
-                                            type="button"
-                                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white/70 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
-                                        >
-                                            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fillRule="evenodd" d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" clipRule="evenodd" />
-                                            </svg>
-                                            <span className="ml-2">Facebook</span>
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white/70 backdrop-blur-sm text-sm font-medium text-gray-700 hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
-                                        >
-                                            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M10.205 2.004c4.975 0 9.01 4.036 9.01 9.01 0 3.981-2.583 7.356-6.161 8.544-.45.082-.615-.195-.615-.435 0-.296.01-1.272.01-2.48 0-.844-.289-1.395-.613-1.676 2.01-.224 4.124-.988 4.124-4.458 0-.985-.351-1.79-.929-2.421.093-.229.403-1.146-.089-2.388 0 0-.757-.243-2.48.925a8.627 8.627 0 00-2.261-.304 8.627 8.627 0 00-2.261.304c-1.724-1.168-2.48-.925-2.48-.925-.492 1.242-.182 2.16-.089 2.388-.578.631-.929 1.436-.929 2.421 0 3.46 2.11 4.238 4.113 4.463-.258.226-.492.624-.574 1.208-.515.231-1.823.63-2.625-.75 0 0-.477-1.017-1.382-1.092 0 0-.88-.011-.062.546 0 0 .591.278 1.002 1.32 0 0 .529 1.612 3.038 1.067.004.752.012 1.304.012 1.508 0 .238-.165.515-.61.436-3.581-1.186-6.167-4.563-6.167-8.544 0-4.974 4.036-9.01 9.01-9.01z" />
-                                            </svg>
-                                            <span className="ml-2">GitHub</span>
-                                        </button>
-                                    </div>
                                 </form>
                             </div>
                         </div>
