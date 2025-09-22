@@ -9,7 +9,7 @@ const BannerSection = () => {
         if (!token) {
             navigate("/login");
         } else {
-            navigate("/avatars");
+            navigate("/conversations");
         }
     }
 
@@ -20,9 +20,7 @@ const BannerSection = () => {
                     <h2 className="text-4xl font-bold text-white sm:text-5xl xl:text-6xl font-pj">
                         L'IA spécialisée dans l'immobilier qui vous répond et vous assiste dans vos projets et au quotidien
                     </h2>
-                    <p className="mt-6 text-xl text-blue-100">
-                        Votre assistant intelligent pour tous vos besoins immobiliers
-                    </p>
+                   
                     <div onClick={redirectToLogin} className="mt-10">
                         <button className="inline-flex items-center px-8 py-4 text-lg font-semibold text-blue-600 transition-all duration-200 bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white">
                             Commencer maintenant

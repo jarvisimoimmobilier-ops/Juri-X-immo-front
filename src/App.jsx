@@ -2,12 +2,17 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Layout from './layout';
 import Profile from './pages/Profile';
-import Avatars from './pages/Avatars';
+import Conversations from './pages/Conversations';
 import Payout from './pages/Payout';
 import Login from './pages/Login';
 import Register from './components/auth/Register';
 import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component
 import NotFound from './components/NotFound';
+import CGU from './pages/CGU';
+import CGV from './pages/CGV';
+import Privacy from './pages/Privacy';
+import MentionsLegales from './pages/MentionsLegales';
+import AboutUs from './pages/AboutUs';
 
 function App() {
   return (
@@ -16,10 +21,17 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<LandingPage />} />
+          <Route path="/cgu" element={<CGU />} />
+           <Route path="/cgv" element={<CGV />} />
+           <Route path="/privacy" element={<Privacy />} />
+            <Route path="/about" element={<AboutUs />} />
+              <Route path="/mentions-legales" element={<MentionsLegales />} />
+          
+
 
         {/* Wrap protected routes with PrivateRoute */}
         <Route
-          path="/profile"
+          path="/profil"
           element={
             <PrivateRoute>
               <Layout>
@@ -29,11 +41,11 @@ function App() {
           }
         />
         <Route
-          path="/avatars"
+          path="/conversations"
           element={
             <PrivateRoute>
               <Layout>
-                <Avatars />
+                <Conversations />
               </Layout>
             </PrivateRoute>
           }

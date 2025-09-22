@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import ChatbotCards from '../components/avatars/ChatbotCards';
-import ChatInterface from '../components/avatars/ChatInterface';
+import ChatbotCards from '../components/conversations/ChatbotCards';
+import ChatInterface from '../components/conversations/ChatInterface';
 import avatartpro from './../assets/images/avatartpro.png';
 import avatarindividual from './../assets/images/avatarindividual.png';
 import axios from 'axios';
 import { apiService } from '../services/authService';
 import { Wallet, User, Building2 } from 'lucide-react';
 
-export default function Avatars() {
+export default function Conversations() {
   // State to store the active tab and the assistant_id value
   const [activeTab, setActiveTab] = useState('ChatbotIndividuel');
   const [assistantId, setAssistantId] = useState("1"); // Default to assistant_id = 1

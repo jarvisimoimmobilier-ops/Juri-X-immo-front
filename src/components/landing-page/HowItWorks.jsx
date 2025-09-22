@@ -64,7 +64,7 @@ const HowItWorks = () => {
                                         <div className="ml-5">
                                             <h3 className="text-lg font-bold text-gray-900 font-pj">Obtenez votre réponse</h3>
                                             <p className="mt-3 text-lg font-normal text-gray-600 font-pj">
-                                                Jarvisimo vous fournira une réponse personnalisée et détaillée.
+                                                Juri-X-Immo vous fournira une réponse personnalisée et détaillée.
                                             </p>
                                         </div>
                                     </div>

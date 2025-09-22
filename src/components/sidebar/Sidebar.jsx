@@ -70,16 +70,16 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <div className="space-y-8 mt-4 flex-1">
           <ul>
             <SideBarOption
-              path="/avatars"
-              label="Avatars"
+              path="/conversations"
+              label="Conversations"
               icon={TbMessageChatbot}
               sidebarExpanded={sidebarExpanded}
               pathname={pathname}
               setSideBarOpen={setSidebarOpen}
             />
             <SideBarOption
-              path="/profile"
-              label="Profile"
+              path="/profil"
+              label="profil"
               icon={CgProfile}
               sidebarExpanded={sidebarExpanded}
               pathname={pathname}

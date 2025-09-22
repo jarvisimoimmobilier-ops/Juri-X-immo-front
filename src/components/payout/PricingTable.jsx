@@ -144,7 +144,7 @@ export default function PricingPage() {
   const handleChoose = (planId) => {
     if (planId === 'ChatbotBasic') {
       // Free plan – just redirect to the app or dashboard
-      window.location.href = '/avatars';
+      window.location.href = '/conversations';
     } else {
       sendPlanToCheckout(planId);
     }

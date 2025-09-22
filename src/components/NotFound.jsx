@@ -79,7 +79,7 @@ const NotFound = () => {
                                     <span>
                                         Besoin d'aide? {' '}
                                         <a 
-                                            href="mailto:support@jarvisimo.com" 
+                                            href="mailto:support@Juri-X-Immo.com" 
                                             className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
                                         >
                                             Contactez-nous

@@ -53,7 +53,7 @@ const LoginForm = () => {
                 password: data.password,
             });
             console.log('Login successful:', response);
-            navigate('/avatars');
+            navigate('/conversations');
         } catch (error) {
             setBackendError(error.message || 'Une erreur est survenue lors de la connexion');
         } finally {
@@ -63,7 +63,7 @@ const LoginForm = () => {
 
     return (
         <>
-            <section className="min-h-screen py-4 sm:py-8 lg:py-16 bg-gray-50 relative overflow-hidden">
+            <section className="w-full min-h-screen py-4 sm:py-8 lg:py-16 bg-gray-50 relative overflow-hidden">
                 {/* Animated background blobs */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -inset-10 opacity-50">

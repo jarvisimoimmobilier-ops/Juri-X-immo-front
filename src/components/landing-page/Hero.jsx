@@ -3,6 +3,12 @@ import React, { useState, useEffect } from "react";
 const Hero = () => {
   const [currentText, setCurrentText] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const [chatInput, setChatInput] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [hasReplied, setHasReplied] = useState(false);
+
+  const token = localStorage.getItem("token");
+  const authHref = token ? "/conversations" : "/login";
 
   const rotatingTexts = [
     "Quelle est la fiscalité de mon investissement locatif ?",
@@ -20,9 +26,52 @@ const Hero = () => {
         setIsVisible(true);
       }, 300);
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
+
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleTryFree = () => {
+    window.location.href = authHref;
+  };
+
+  const handleSeeDemo = () => {
+    scrollTo("demo");
+  };
+
+  // send once → then redirect to connexion if not authenticated
+  const handleSend = () => {
+    if (!chatInput.trim()) return;
+
+    // push user message
+    const userMsg = {
+      role: "user",
+      text: chatInput.trim(),
+    };
+    setMessages((m) => [...m, userMsg]);
+    setChatInput("");
+
+    if (!hasReplied) {
+      // simple canned reply (one time)
+      const reply = {
+        role: "ai",
+        text:
+          "Merci ! Voici un aperçu rapide. Pour une réponse complète et personnalisée, connectez-vous.",
+      };
+      setMessages((m) => [...m, reply]);
+      setHasReplied(true);
+
+      // redirect after short delay if not logged in
+      if (!token) {
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1200);
+      }
+    }
+  };
 
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
@@ -35,40 +84,25 @@ const Hero = () => {
           
           {/* Left Content */}
           <div className="space-y-6 lg:space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></span>
-              Assistant IA Spécialisé Immobilier
-            </div>
 
-            {/* Main heading */}
-            <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                Votre Expert Juridique
-                <span className="block">
-                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Immobilier 24/7
-                  </span>
-                </span>
-              </h1>
-              
-              <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-                <strong className="text-orange-500">JARVISIMO</strong> révolutionne l'immobilier en vous donnant accès instantané à un assistant juridique expert qui répond à toutes vos questions, génère vos documents et simule vos projets.
-              </p>
-            </div>
+            {/* Main heading (new tagline with same gradient style) */}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900">
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                L’IA spécialisée dans l'immobilier
+              </span>{" "}
+              qui vous répond et vous assiste dans vos projets et au quotidien,{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                24/7
+              </span>.
+            </h1>
 
-            {/* Star Rating */}
+            {/* Star Rating (kept) */}
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <span className="text-2xl font-bold text-gray-900">4.5</span>
                 <div className="flex">
-                  {[...Array(4)].map((_, index) => (
-                    <svg
-                      key={index}
-                      className="w-5 h-5 text-yellow-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                  {[...Array(4)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927a1 1 0 011.902 0l1.07 3.292a1 1 0 00.95.69h3.462a1 1 0 01.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292a1 1 0 01-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034a1 1 0 01-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72a1 1 0 01.588-1.81h3.462a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -100,7 +134,7 @@ const Hero = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500 mb-2 font-medium">Question fréquente :</p>
+                  <p className="text-sm text-gray-500 mb-2 font-medium">Questions fréquentes :</p>
                   <p className={`text-gray-800 font-medium text-lg transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
                     "{rotatingTexts[currentText]}"
                   </p>
@@ -110,11 +144,7 @@ const Hero = () => {
 
             {/* Key Benefits */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                "Réponses instantanées",
-                "Documents générés", 
-                "Conformité légale"
-              ].map((benefit, index) => (
+              {["Réponses instantanées", "Documents générés", "Conformité légale"].map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg className="w-3 h-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,20 +156,28 @@ const Hero = () => {
               ))}
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons (now functional) */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-105 transition-all duration-200 shadow-lg">
+              <button
+                onClick={handleTryFree}
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-105 transition-all duration-200 shadow-lg"
+              >
                 Essayer gratuitement
                 <svg className="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
-              <button className="inline-flex items-center justify-center px-6 py-4 text-lg font-semibold text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-md">
+              <a
+                href="#demo"
+                // onClick={handleSeeDemo}
+                className="inline-flex items-center justify-center px-6 py-4 text-lg font-semibold text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-md"
+              >
                 <svg className="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M12 5v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Voir la démo
-              </button>
+              </a>
+                
             </div>
           </div>
 
@@ -156,7 +194,7 @@ const Hero = () => {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-white font-semibold">JARVISIMO</h3>
+                      <h3 className="text-white font-semibold">Juri-X-Immo</h3>
                       <p className="text-blue-100 text-sm">Assistant Juridique Immobilier</p>
                     </div>
                   </div>
@@ -172,66 +210,77 @@ const Hero = () => {
                 {/* User message */}
                 <div className="flex justify-end">
                   <div className="bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-xs">
-                    <p className="text-sm">Je veux acheter mon premier appartement. Quelles sont les étapes et la fiscalité ?</p>
+                    <p className="text-sm">
+                      Je veux acheter mon premier appartement. Quelles sont les étapes <strong>à suivre</strong> et la fiscalité <strong>applicable</strong> ?
+                    </p>
                   </div>
                 </div>
                 
-                {/* AI Response */}
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 flex-1 shadow-sm">
-                    <p className="text-sm text-gray-800 mb-3">
-                      Parfait ! Je vais vous accompagner dans votre projet d'acquisition. Voici les étapes clés :
-                    </p>
-                    <div className="space-y-2">
-                      {[
-                        "Évaluation de votre capacité d'emprunt",
-                        "Recherche et visite de biens", 
-                        "Négociation et offre d'achat"
-                      ].map((step, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
-                            index === 0 ? 'bg-green-500' : index === 1 ? 'bg-blue-500' : 'bg-purple-500'
-                          }`}>
-                            <span className="text-white text-xs font-bold">{index + 1}</span>
+                {/* AI Response (static preview + dynamic one on send) */}
+                {messages.length === 0 && (
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 flex-1 shadow-sm">
+                      <p className="text-sm text-gray-800 mb-3">
+                        Parfait ! Je vais vous accompagner dans votre projet d'acquisition. Voici les étapes clés :
+                      </p>
+                      <div className="space-y-2">
+                        {[
+                          "Évaluation de votre capacité d'emprunt",
+                          "Recherche et visite de biens",
+                          "Négociation et offre d'achat"
+                        ].map((step, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                              index === 0 ? 'bg-green-500' : index === 1 ? 'bg-blue-500' : 'bg-purple-500'
+                            }`}>
+                              <span className="text-white text-xs font-bold">{index + 1}</span>
+                            </div>
+                            <span className="text-xs text-gray-600">{step}</span>
                           </div>
-                          <span className="text-xs text-gray-600">{step}</span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Typing indicator */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div className="bg-white rounded-2xl px-4 py-3 shadow-sm">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                {/* Render dynamic chat */}
+                {messages.map((m, i) => (
+                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "items-start space-x-3"}`}>
+                    {m.role === "ai" && (
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                    <div className={`${m.role === "user" ? "bg-blue-600 text-white rounded-2xl rounded-tr-sm" : "bg-white rounded-2xl rounded-tl-sm"} px-4 py-3 max-w-xs shadow-sm`}>
+                      <p className="text-sm">{m.text}</p>
                     </div>
                   </div>
-                </div>
+                ))}
+
               </div>
 
               {/* Input area */}
               <div className="bg-white px-6 py-4 border-t border-gray-100">
                 <div className="flex items-center space-x-3">
-                  <input 
-                    type="text" 
-                    placeholder="Posez votre question immobilière..."
+                  <input
+                    type="text"
+                    placeholder="Posez votre question …"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
                     className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                   />
-                  <button className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
+                  <button
+                    onClick={handleSend}
+                    className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                    aria-label="Envoyer"
+                  >
                     <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
@@ -244,7 +293,6 @@ const Hero = () => {
             <div className="absolute -top-4 -right-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg animate-pulse">
               ✓ Conforme aux lois 2025
             </div>
-            
             <div className="absolute -bottom-4 -left-4 bg-orange-500 text-white rounded-lg shadow-lg p-3">
               <div className="flex items-center space-x-2">
                 <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

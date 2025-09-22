@@ -26,7 +26,7 @@ const PricingSection = () => {
       icon: Shield,
       popular: false,
       cta: 'Commencer gratuitement',
-      description: 'Découvrez JARVISIMO sans engagement'
+      description: 'Découvrez Juri-X-Immo sans engagement'
     },
     {
       id: 'individual',
@@ -97,7 +97,7 @@ const PricingSection = () => {
           <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl lg:text-6xl font-pj mb-6">
             Choisissez votre
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-              abonnement JARVISIMO
+              abonnement Juri-X-Immo
             </span>
           </h2>
           

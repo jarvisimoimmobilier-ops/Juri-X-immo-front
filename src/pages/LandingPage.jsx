@@ -17,6 +17,7 @@ import IntroSection from '../components/landing-page/IntroSection'
 import VideoSection from '../components/landing-page/VideoSection'
 import ExampleSection from '../components/landing-page/ExampleSection'
 import BannerSection from '../components/landing-page/BannerSection'
+import LawsSection from '../components/landing-page/LawsSection'
 
 export default function LandingPage() {
 
@@ -53,13 +54,16 @@ export default function LandingPage() {
       {/* Section 6: On a tous une question sur l'habitat */}
       <IntroSection />
       
+      <div id="demo">
       {/* Section 7: Scroll Stopper Video */}
-      <VideoSection />
+      <VideoSection /></div>
       
       {/* Section 8: Exemple de fonctionnalité */}
-      <div id="examples">
+      <div id="features">
         <ExampleSection />
       </div>
+
+      <LawsSection />
 
       {/* Pricing Section */}
       <div id='tarifs'>

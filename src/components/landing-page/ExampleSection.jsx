@@ -2,7 +2,7 @@ import React from 'react';
 
 const ExampleSection = () => {
     return (
-        <section className="py-16 bg-gradient-to-br from-blue-50 to-purple-50 sm:py-20 lg:py-24">
+        <section id='features' className="py-16 bg-gradient-to-br from-blue-50 to-purple-50 sm:py-20 lg:py-24">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center">

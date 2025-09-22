@@ -9,7 +9,7 @@ const FeaturesSection = () => {
             <p className="text-xs font-semibold tracking-widest text-white uppercase">Simplifiez le Droit Immobilier</p>
           </div>
           <h2 className="mt-6 text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">
-            Naviguez dans la complexité du droit immobilier avec Jarvisimo
+            Naviguez dans la complexité du droit immobilier avec Juri-X-Immo
           </h2>
           <p className="mt-4 text-base leading-relaxed text-gray-600">
             Vous vous sentez perdu face à la complexité du droit immobilier et ses subtilités ?
@@ -29,7 +29,7 @@ const FeaturesSection = () => {
 </svg>
               <h3 className="mt-8 text-lg font-semibold text-black">Langage Simplifié</h3>
               <p className="mt-4 text-base text-gray-600">
-                Jarvisimo vous permet de naviguer facilement de manière intuitive dans cette complexité de la réglementation immobilière avec un langage simplifié et accessible.
+                Juri-X-Immo vous permet de naviguer facilement de manière intuitive dans cette complexité de la réglementation immobilière avec un langage simplifié et accessible.
               </p>
             </div>
           </div>
@@ -45,7 +45,7 @@ const FeaturesSection = () => {
 </svg>
               <h3 className="mt-8 text-lg font-semibold text-black">Accompagnement Expert</h3>
               <p className="mt-4 text-base text-gray-600">
-                Éliminez les recherches inutiles, fastidieuses et parfois coûteuses. JARVISIMO vous accompagne dans toutes les étapes de votre projet immobilier.
+                Éliminez les recherches inutiles, fastidieuses et parfois coûteuses. Juri-X-Immo vous accompagne dans toutes les étapes de votre projet immobilier.
               </p>
             </div>
           </div>

@@ -5,7 +5,7 @@ const MoreFeatureSection = () => {
         <section className="py-12 bg-gray-50 sm:py-16 lg:py-20">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="max-w-xl mx-auto text-center xl:max-w-2xl">
-                    <h2 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl xl:text-5xl font-pj">Optimisez vos recherches avec le pouvoir Magique de JARVISIMO</h2>
+                    <h2 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl xl:text-5xl font-pj">Optimisez vos recherches avec le pouvoir Magique de Juri-X-Immo</h2>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 mt-8 lg:mt-20">
