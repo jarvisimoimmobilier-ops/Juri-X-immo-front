@@ -65,7 +65,7 @@ export default function Profile() {
       };
       
       const response = await axios.post(
-        `https://lionfish-app-9xylm.ondigitalocean.app/api/v1/user/uploadProfilePicture`,
+        `https://juri-x-immo-eqjp2.ondigitalocean.app/api/v1/user/uploadProfilePicture`,
         formData,
         { headers }
       );

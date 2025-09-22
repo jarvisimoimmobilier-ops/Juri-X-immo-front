@@ -242,7 +242,7 @@ const ChatInterface = ({ assistantId }) => {
     const headers = { Authorization: localStorage.getItem("token") };
     try {
       const response = await axios.post(
-        'https://lionfish-app-9xylm.ondigitalocean.app/api/v1/conversation',
+        'https://juri-x-immo-eqjp2.ondigitalocean.app/api/v1/conversation',
         { assistant_id: assistantId },
         { headers }
       );
