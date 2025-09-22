@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "../components/landing-page/Header";
 import Footer from "../components/landing-page/Footer";
-
 const AboutUs = () => {
   const token = localStorage.getItem("token");
   const goTry = () => (window.location.href = token ? "/features" : "/login");
