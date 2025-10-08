@@ -31,7 +31,7 @@ const Footer = () => {
   const resourceLinks = [
     { label: "Mode d’emploi", to: "/about" },        // rattache à À propos
     { label: "FAQ", to: "/#faq" },                   // ancre sur la LP
-    { label: "Partenaires", to: "/partenaires" },    // page partenaire conservée
+    { label: "Partenaires", to: "/contact" },    // page partenaire conservée
     { label: "Centre d’aide", to: "/contact" },      // fusionné
     { label: "Nous contacter", to: "/contact" },     // fusionné
     { label: "Newsletter", to: "/contact" },         // redirige vers contact si pas de page
