@@ -64,15 +64,12 @@ const Hero = () => {
       setMessages((m) => [...m, reply]);
       setHasReplied(true);
 
-      // redirect after short delay if not logged in
-      if (!token) {
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 1200);
-      }
+      // redirect after short delay
+      setTimeout(() => {
+        window.location.href = token ? "/conversations" : "/login";
+      }, 1200);
     }
   };
-
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
       {/* Background decoration */}
@@ -144,7 +141,7 @@ const Hero = () => {
 
             {/* Key Benefits */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {["Réponses instantanées", "Documents générés", "Conformité légale"].map((benefit, index) => (
+              {["Réponses instantanées", "Génération de documents", "Conformité légale"].map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg className="w-3 h-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

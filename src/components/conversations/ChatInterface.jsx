@@ -385,7 +385,7 @@ const ChatInterface = ({ assistantId }) => {
       <div className="hidden lg:flex w-80 bg-gray-50 border-r border-gray-200 flex-col">
         {/* Desktop Sidebar Content */}
         <div className="p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Conversations</h2>
+          {/* <h2 className="text-lg font-semibold text-gray-900 mb-4">Conversations</h2> */}
           <button
             onClick={() => setShowCreateModal(true)}
             className="w-full flex items-center justify-center px-4 py-2.5 bg-[#223E66] text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
@@ -475,7 +475,9 @@ const ChatInterface = ({ assistantId }) => {
         {/* Desktop Header */}
         <div className="hidden lg:flex flex-shrink-0 items-center justify-between p-3 border-b border-gray-200 bg-white">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">Assistant IA</h1>
+<h1 className="text-lg font-semibold text-gray-900">
+  {assistantId === "1" ? "Individuel" : "Pro"}
+</h1>
             <p className="text-sm text-gray-500">
               {currentConversation?.name || 'Sélectionnez une conversation'}
             </p>

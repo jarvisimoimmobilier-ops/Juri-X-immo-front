@@ -29,12 +29,12 @@ const Footer = () => {
   ];
 
   const resourceLinks = [
-    { label: "Mode d’emploi", to: "/mode-emploi" },      // crée la page si besoin
-    { label: "FAQ", to: "/#faq" },                       // ancre sur la LP
-    { label: "Partenaires", to: "/partenaires" },        // crée la page si besoin
-    { label: "Centre d’aide", to: "/centre-aide" },      // crée la page si besoin
-    { label: "Nous contacter", to: "/contact" },         // crée la page si besoin
-    { label: "Newsletter", to: "/newsletter" },          // crée la page si besoin
+    { label: "Mode d’emploi", to: "/about" },        // rattache à À propos
+    { label: "FAQ", to: "/#faq" },                   // ancre sur la LP
+    { label: "Partenaires", to: "/partenaires" },    // page partenaire conservée
+    { label: "Centre d’aide", to: "/contact" },      // fusionné
+    { label: "Nous contacter", to: "/contact" },     // fusionné
+    { label: "Newsletter", to: "/contact" },         // redirige vers contact si pas de page
   ];
 
   return (
@@ -52,7 +52,7 @@ const Footer = () => {
                 <img className="w-auto h-12" src={logo} alt="Juri-X-Immo Logo" />
               </Link>
               <p className="mt-8 text-sm leading-6 text-gray-300">
-                Juri-X-Immo, assistant juridique alimenté par l’IA, est là pour
+                Juri-X-Immo, <strong>votre</strong> assistant juridique alimenté par l’IA, est là pour
                 <strong> simplifier</strong> la gestion de vos projets immobiliers.
                 Obtenez des réponses rapides et précises, 24/7, et faites de chaque
                 décision une réussite.

@@ -1,6 +1,12 @@
 import React from 'react';
 
 const ExampleSection = () => {
+    const token = localStorage.getItem("token");
+
+    const handleTestFeature = () => {
+        window.location.href = token ? "/conversations" : "/login";
+    };
+
     return (
         <section id='features' className="py-16 bg-gradient-to-br from-blue-50 to-purple-50 sm:py-20 lg:py-24">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -86,7 +92,10 @@ const ExampleSection = () => {
                                     </div>
                                     
                                     <div className="mt-8 text-center">
-                                        <button className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white transition-all duration-200 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
+                                        <button
+                                            onClick={handleTestFeature}
+                                            className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white transition-all duration-200 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+                                        >
                                             Tester cette fonctionnalité
                                             <svg className="w-5 h-5 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />

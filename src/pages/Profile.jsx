@@ -121,8 +121,7 @@ export default function Profile() {
             {activeTab === 'profile' && userData ? (
               <div className="mt-6">
                 <p className="text-base font-bold text-gray-900">Profil</p>
-                <p className="mt-1 text-sm font-medium text-gray-500">Lorem ipsum dolor sit amet, consectetur adipis.</p>
-
+               
                 <form action="#" method="POST" className="max-w-3xl mt-12">
                   <div className="space-y-8">
                     <div className="sm:grid sm:grid-cols-3 sm:gap-5 sm:items-start">
@@ -190,7 +189,10 @@ export default function Profile() {
                     <div className="sm:grid sm:grid-cols-3 sm:gap-5 sm:items-start">
                       <label className="block text-sm font-bold text-gray-900 sm:mt-px sm:pt-2">Pays</label>
                       <div className="mt-2 sm:mt-0 sm:col-span-2">
-                        <select className="block w-full py-3 pl-4 pr-10 border-gray-300 rounded-lg focus:outline-none focus:ring-customBlue focus:border-customBlue sm:text-sm">
+                        <select
+                          className="block w-full py-3 pl-4 pr-10 border-gray-300 rounded-lg focus:outline-none focus:ring-customBlue focus:border-customBlue sm:text-sm"
+                          defaultValue="France"
+                        >
                           {countries.map((country) => (
                             <option key={country}>{country}</option>
                           ))}
@@ -204,11 +206,7 @@ export default function Profile() {
                   </div>
                 </form>
               </div>
-            ) : (
-              <div className="mt-6">
-                <p>Loading...</p>
-              </div>
-            )}
+            ) : null}
 
             {activeTab === 'password' && (
               <div className="mt-6">

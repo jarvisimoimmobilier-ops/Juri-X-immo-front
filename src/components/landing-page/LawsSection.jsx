@@ -18,9 +18,7 @@ const LawsSection = () => {
         </h2>
 
         <p className="max-w-2xl mx-auto mt-6 text-lg text-gray-600">
-          Juri-X-Immo se met à jour en continu pour intégrer les dernières
-          évolutions législatives et réglementaires. Vous êtes ainsi toujours
-          assuré(e) de recevoir une réponse conforme à la loi en vigueur.
+        Avec Juri-X-Immo, vous avez directement accès à une base de données juridiques à jour, pour être au fait des évolutions législatives, réglementaires et jurisprudentielles.
         </p>
 
         <div className="mt-10">

@@ -18,7 +18,9 @@ const BannerSection = () => {
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-4xl font-bold text-white sm:text-5xl xl:text-6xl font-pj">
-                        L'IA spécialisée dans l'immobilier qui vous répond et vous assiste dans vos projets et au quotidien
+Juri-X-Immo, la
+révolution immobilière faite pour vous : informez vous en un clic, simulez vos projets et générez vos documents. 
+
                     </h2>
                    
                     <div onClick={redirectToLogin} className="mt-10">

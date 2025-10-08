@@ -5,12 +5,12 @@ const DialogueSection = () => {
     {
       role: 'user',
       text:
-        "Bonjour ! Je souhaite acheter mon premier appartement. Quelles sont les étapes à suivre et la fiscalité applicable ?",
+        "Bonjour ! Je souhaite réaliser mon premier investissement immobilier. Quelles sont les démarches à effectuer et quelles sont les règles fiscales en vigueur ?",
     },
     {
       role: 'ai',
       text:
-        "Parfait ! Je vais vous guider étape par étape. Commençons par définir votre budget et vos critères de recherche...",
+        "Bonjour ! Félicitations pour votre projet d'investissement immobilier. Je vais vous donner une vue d'ensemble des démarches à suivre ainsi que des principales règles fiscales en vigueur.",
     },
   ]);
   const [input, setInput] = useState('');
@@ -50,11 +50,10 @@ const DialogueSection = () => {
       ]);
       setHasReplied(true);
 
-      if (!token) {
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 1200);
-      }
+      // Redirection pour tous les cas
+      setTimeout(() => {
+        window.location.href = token ? '/conversations' : '/login';
+      }, 1200);
     }
   };
 

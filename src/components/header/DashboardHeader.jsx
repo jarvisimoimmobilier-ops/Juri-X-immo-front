@@ -40,7 +40,9 @@ function DashboardHeader({
               </svg>
             </button>
             <p className='ml-3 '>
-              {pageTitle}
+              {pageTitle
+                ? pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
+                : ''}
             </p>
           </div>
 

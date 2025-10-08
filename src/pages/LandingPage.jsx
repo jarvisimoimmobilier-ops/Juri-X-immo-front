@@ -22,7 +22,7 @@ import LawsSection from '../components/landing-page/LawsSection'
 export default function LandingPage() {
 
   return (
-    <div>
+    <div lang="fr" translate="no">
         {/* <div class="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#f3ad8f_100%)]"></div> */}
         {/* <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div> */}
 

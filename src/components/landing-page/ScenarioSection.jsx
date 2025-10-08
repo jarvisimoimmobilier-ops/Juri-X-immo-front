@@ -4,7 +4,7 @@ const ScenarioSection = () => {
   const token = localStorage.getItem('token');
 
   const handleSimulate = () => {
-    window.location.href = token ? '/scenarios' : '/login';
+    window.location.href = token ? '/conversations' : '/login';
   };
 
   const handleDownload = () => {

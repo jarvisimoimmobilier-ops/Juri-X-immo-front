@@ -3,7 +3,7 @@ import Header from "../components/landing-page/Header";
 import Footer from "../components/landing-page/Footer";
 const AboutUs = () => {
   const token = localStorage.getItem("token");
-  const goTry = () => (window.location.href = token ? "/features" : "/login");
+  const goTry = () => (window.location.href = token ? "/conversations" : "/login");
   const goContact = () => (window.location.href = "/contact");
 
   return (
@@ -128,60 +128,44 @@ const AboutUs = () => {
           </p>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Posez votre question",
-                desc:
-                  "Utilisez votre langage naturel. Inutile de connaître le jargon juridique.",
-                icon: (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M8 10h.01M12 10h.01M16 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                ),
-              },
-              {
-                title: "Obtenez une réponse claire",
-                desc:
-                  "Explications compréhensibles + références utiles. Toujours orienté action.",
-                icon: (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                ),
-              },
-              {
-                title: "Générez des documents",
-                desc:
-                  "Baux, lettres, clauses, checklists… prêts à l’emploi et adaptés à votre besoin.",
-                icon: (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293L18.707 9.12A1 1 0 0119 9.828V19a2 2 0 01-2 2z"
-                  />
-                ),
-              },
-            ].map(({ title, desc, icon }) => (
-              <div
-                key={title}
-                className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    {icon}
-                  </svg>
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-gray-900">{title}</h3>
-                <p className="mt-2 text-sm text-gray-600">{desc}</p>
+            {/* Case 1 */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 21v-2a4 4 0 00-8 0v2M12 11a4 4 0 100-8 4 4 0 000 8z" />
+                </svg>
               </div>
-            ))}
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">Créez votre compte</h3>
+              <p className="mt-2 text-sm text-gray-600">
+                Saisissez votre adresse e-mail et votre mot de passe pour accéder à votre espace personnel.
+              </p>
+            </div>
+            {/* Case 2 */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">Posez votre question</h3>
+              <p className="mt-2 text-sm text-gray-600">
+                Formulez votre question de manière claire et précise dans la barre de chat.<br />
+                Vous pouvez par exemple demander :<br />
+                <span className="italic text-blue-700">"Quelles sont les démarches à suivre pour vendre un appartement ?"</span>
+              </p>
+            </div>
+            {/* Case 3 */}
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">Obtenez votre réponse</h3>
+              <p className="mt-2 text-sm text-gray-600">
+                Juri X Immo vous fournira une réponse personnalisée et détaillée, basée sur les informations que vous avez fournies.
+              </p>
+            </div>
           </div>
         </div>
       </section>

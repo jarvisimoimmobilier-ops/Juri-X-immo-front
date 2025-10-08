@@ -13,6 +13,7 @@ import CGV from './pages/CGV';
 import Privacy from './pages/Privacy';
 import MentionsLegales from './pages/MentionsLegales';
 import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+                <Route path="/contact" element={<Contact />} />
         <Route path="/" element={<LandingPage />} />
           <Route path="/cgu" element={<CGU />} />
            <Route path="/cgv" element={<CGV />} />
